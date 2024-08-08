@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Pages/LoginAndRegisterPages/LoginPage/Login';
 import Register from './Pages/LoginAndRegisterPages/RegisterPage/Register';
-import ForgetPassword from './Pages/LoginAndRegisterPages/ForgetPassword/ForgetPassword';
-import ResetPassword from './Pages/LoginAndRegisterPages/ForgetPassword/ResetPassword';
+import ForgetPassword from './Pages/LoginAndRegisterPages/ForgetAndResetPassword/ForgetPassword';
+import ResetPassword from './Pages/LoginAndRegisterPages/ForgetAndResetPassword/ResetPassword';
 
 
 export default function App() {
