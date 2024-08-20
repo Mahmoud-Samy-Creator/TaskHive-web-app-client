@@ -4,7 +4,11 @@ export default function FormInput({InputFor, InputType, placeHolder, content, ha
     return(
         <div className="form-group mb-3">
             <label className="label" htmlFor={InputFor}>{content}</label>
-            <input type={InputType} className="form-control" placeholder={placeHolder} id={InputFor} onChange={(e) => handler(e)} required />
+            <input type={InputType}
+            className="form-control"
+            placeholder={placeHolder}
+            id={InputFor}
+            onChange={(e) => handler(e)} required />
         </div>
     );
 }
