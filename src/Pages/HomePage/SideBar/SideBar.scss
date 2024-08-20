@@ -1,0 +1,90 @@
+@import '../styleVariables';
+
+.side-bar {
+    text-align: center;
+    .icon {
+        color: #6b6b6b;
+        &:hover {
+            color: white;
+            background-color: $primary-color;
+        }
+    }
+}
+@media only screen and (min-width: 767px) and (max-width: 949px)  {
+    .side-bar {
+        flex-basis: 100%;
+        height: fit-content;
+        margin-bottom: 100px;
+        border-bottom: 1px solid $border-color;
+        overflow: hidden;
+        transition: 0.3s;
+        &.closed {
+            height: 50px;
+        }
+        &.opened {
+            height: fit-content;
+        }
+        .icon {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 25px;
+            .icon-disc {
+                width: 10%;
+                text-align: left;
+            }
+        }
+        .sidebar-on-mobile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            .wide-sideNav {
+                cursor: pointer;
+            }
+        }
+    }
+}
+@media (min-width: 950px) {
+    .side-bar {
+        padding: 10px;
+        flex-basis: 5%;
+        // border: 1px solid red;
+        // width: 5%;
+        // max-width: 5%;
+        // min-width: 5%;
+        border-right: 1px solid $border-color;
+        .side-bar-icons {
+            height: 100%;
+            padding-top: 10px;
+            position: relative;
+            .sidebar-on-mobile {
+                display: none;
+            }
+            .icon {
+                font-size: 30px;
+                width: 100%;
+                border-radius: 14px;
+                color: #6b6b6b;
+                transition: 0.2s;
+                cursor: pointer;
+                .icon-disc {
+                    display: none;
+                }
+                &:hover {
+                    color: white;
+                    background-color: $primary-color;
+                }
+            }
+            .icon:not(.logout) {
+                margin-bottom: 50px;
+            }
+            .logout {
+                position: absolute;
+                bottom: 15px;
+                left: 50%;
+                transform: translate(-50%);
+            }
+        }
+    }
+}
