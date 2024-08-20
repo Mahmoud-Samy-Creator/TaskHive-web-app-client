@@ -1,0 +1,41 @@
+@import '../../../styleVariables';
+
+@media (min-width: 950px) {
+    .user-info-summury {
+        height: 40%;
+        border-bottom: 1px solid $border-color;
+        .user-account-photo {
+            display: block;
+            width: 100px;
+            height: 100px;
+            background-color: $icons-color;
+            margin: 50px auto 25px;
+            border-radius: 15px;
+        }
+        &>div:last-child {
+            background-color: #019689;
+            color: white;
+            width: fit-content;
+            padding: 5px 10px;
+            text-align: center;
+            margin: 10px auto;
+            font-weight: 500;
+            border-radius: 5px;
+        }
+    }
+    .user-connect {
+        display: flex;
+        text-align: left;
+        justify-content: center;
+        margin: 20px 0;
+        .user-connect-platform {
+            flex-basis: 80%;
+        }
+        .social-contact {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+        }
+    }
+}
