@@ -1,0 +1,32 @@
+@import '../../../../styleVariables';
+@media (min-width: 910px) {
+    .add-workspace-form {
+        z-index: 100;
+        width: 90%;
+        height: 200px;
+        background-color: white;
+        border-radius: 14px;
+        border: 1px solid #eee;
+        transition: 0.2s;
+        span {
+            display: block;
+            margin: 20px auto;
+        }
+        input, button {
+            outline: none;
+        }
+        input {
+            width: 100%;
+            border: 1px solid #eee;
+            padding: 5px 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            border: 1px solid #eee;
+            background-color: $primary-color;
+            color: white;
+            padding: 5px 25px;
+            border-radius: 10px;
+        }
+    }
+}
