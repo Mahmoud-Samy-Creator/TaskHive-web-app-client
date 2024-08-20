@@ -15,7 +15,7 @@ export default function Register() {
 								<SignupLoginRef
 									headerContent="Welcome to registration"
 									statment="You already have an account?"
-									hyperLink="/login"
+									hyperLink="/auth/login"
 									linkContent="login"
 								/>
 							</div>
