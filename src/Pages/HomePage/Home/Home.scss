@@ -1,0 +1,21 @@
+@import '../styleVariables';
+
+.home-page {
+    color: $text-color;
+    height: 97vh;
+    max-height: 97vh;
+    min-height: 97vh;
+    margin: 10px;
+    border: 1px solid $border-color;
+    border-radius: 14px;
+    width: 99%;
+    max-width: 99%;
+    overflow: hidden;
+}
+
+@media (min-width: 950px) {
+    .home-page {
+        display: flex;
+    }
+}
+
