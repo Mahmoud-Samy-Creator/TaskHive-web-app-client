@@ -1,0 +1,130 @@
+@import '../../../../../styleVariables';
+@media (min-width: 950px) {
+    .dashboard {
+        flex-grow: 1;
+        // Start project header
+        .header {
+            height: 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid $border-color;
+            .project-header-setting {
+                cursor: pointer;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 25px;
+                background-color: $border-color;
+                border-radius: 50%;
+                transition: 0.2s;
+                &:hover {
+                    background-color: $background-color;
+                }
+            }
+        }
+        // End project header
+        // Start Project Properties
+        .project-properties {
+            height: 18%;
+            & > div:first-child {
+                padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 70%;
+                & > div:first-child {
+                    flex-basis: 50%;
+                    display: flex;
+                    align-items: center;
+                    text-align: left;
+                    .project-icon {
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        background-color: $background-color;
+                        margin-right: 20px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 30px;
+                    }
+                    .project-progress {
+                        flex-grow: 1;
+                        div:last-child {
+                            height: 15px;
+                            width: 80%;
+                            background-color: $border-color;
+                            span {
+                                background-color: $primary-color;
+                                display: block;
+                            }
+                        }
+                    }
+                }
+                & > div:last-child {
+                    display: flex;
+                    .add-members {
+                        margin-left: 10px;
+                        & > button {
+                            background-color: $primary-color;
+                            padding: 10px 20px;
+                            color: white;
+                            border: none;
+                            transition: 0.2s;
+                            outline: none;
+                            &:hover {
+                                background-color: #1976d2;
+                            }
+                        }
+                    }
+                }
+            }
+            & > div:last-child {
+                height: 30%;
+                border-top: 1px solid $border-color;
+                border-bottom: 1px solid $border-color;
+                display: flex;
+                align-items: center;
+                ul {
+                    height: 100%;
+                    list-style: none;
+                    text-align: left;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 20px;
+                    margin: 20px 0;
+                    li {
+                        margin-right: 30px;
+                        position: relative;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        &:after {
+                            content: "";
+                            position: absolute;
+                            width: 0;
+                            height: 3px;
+                            background-color: $primary-color;
+                            bottom: -1px;
+                            left: 0;
+                            transition: 0.3s;
+                        }
+                        &:hover::after {
+                            width: 100%;
+                        }
+                        a {
+                            color: black;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+        }
+        // End Project Properties
+        // End Project Properties
+    }
+}
