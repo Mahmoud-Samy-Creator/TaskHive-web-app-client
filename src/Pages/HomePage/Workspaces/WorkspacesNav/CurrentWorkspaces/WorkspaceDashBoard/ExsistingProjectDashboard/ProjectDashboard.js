@@ -4,7 +4,7 @@ import DashboardHeader from "./DashboardHeader/DashboardHeader";
 import ProjectProperties from './ProjectProperties/ProjectProperties';
 import KanbanBoard from "./KanbanBoard/KanbanBoard";
 import ProjectOverView from "./ProjectOverView/ProjectOverView";
-import ProjectNotes from "./ProkectNotes/ProkectNotes";
+import ProjectNotes from "./ProjectNotes/ProjectNotes";
 import ProjectQuestions from "./ProjectQuestions/ProjectQuestions";
 import { useParams, Routes, Route } from "react-router-dom";
 
