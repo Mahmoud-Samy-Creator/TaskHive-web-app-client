@@ -1,52 +1,100 @@
-import React from "react";
+import React, { useState } from "react";
 import FormInput from "../../MainComponents/FormInput";
 import FormSubmissionBtn from "../../MainComponents/FormSubmission";
-import { useState } from "react";
+import axios from "axios";
 
-const submitFailed = {
+const submitFailedStyle = {
     textAlign: "center",
     background: "#f63a3a",
     color: "white",
     borderRadius: "10px",
     fontWeight: "bold",
     padding: "10px 0"
-}
-const submitSuccess = {
+};
+
+const submitSuccessStyle = {
     textAlign: "center",
     background: "#11cab6",
     color: "white",
     borderRadius: "10px",
     fontWeight: "bold",
     padding: "10px 0"
-}
+};
+
 export default function RegisterForm() {
     const [userRegistationInfo, setUserRegistationInfo] = useState({
         username: "",
         email: "",
         password: "",
         passwordConfirmation: ""
-    })
+    });
     const [submiteMessage, setSubmiteMessage] = useState(null);
+
     function handleUsername(e) {
-        setUserRegistationInfo({...userRegistationInfo, username: e.target.value})
+        setUserRegistationInfo({ ...userRegistationInfo, username: e.target.value });
     }
+
     function handleUserEmail(e) {
-        setUserRegistationInfo({...userRegistationInfo, email: e.target.value})
+        setUserRegistationInfo({ ...userRegistationInfo, email: e.target.value });
     }
+
     function handleUserPass(e) {
-        setUserRegistationInfo({...userRegistationInfo, password: e.target.value})
+        setUserRegistationInfo({ ...userRegistationInfo, password: e.target.value });
     }
+
     function handleUserPassConfirm(e) {
-        setUserRegistationInfo({...userRegistationInfo, passwordConfirmation: e.target.value})
+        setUserRegistationInfo({ ...userRegistationInfo, passwordConfirmation: e.target.value });
     }
+
     function handleSubmit(e) {
         e.preventDefault();
-        userRegistationInfo.password === userRegistationInfo.passwordConfirmation ? 
-        setSubmiteMessage(true) : setSubmiteMessage(false); 
+        if (userRegistationInfo.password === userRegistationInfo.passwordConfirmation) {
+            const data = {
+                "username": userRegistationInfo.username,
+                "email": userRegistationInfo.email,
+                "password": userRegistationInfo.password
+            };
+            regPostRequest(data);
+        } else {
+            setSubmiteMessage({ success: false, message: "Passwords do not match" });
+        }
     }
-    return(
-        <div>
-            <form action="/" method="post" className="signin-form" onSubmit={handleSubmit}>
+
+    function regPostRequest(data) {
+        axios.post('http://localhost:5000/auth/register', data)
+            .then(res => {
+                console.log(res);
+                if (res.status === 201) {
+                    setSubmiteMessage({ success: true, message: "Submitted: Check your email" });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                handleErrors(err);
+            });
+    }
+
+    function handleErrors(err) {
+        if (err.response) {
+            switch (err.response.status) {
+                case 400:
+                    setSubmiteMessage({ success: false, message: "Email already exists" });
+                    break;
+                case 500:
+                    setSubmiteMessage({ success: false, message: "Failed to create user" });
+                    break;
+                default:
+                    setSubmiteMessage({ success: false, message: "Unexpected error: " + err.response.status });
+                    break;
+            }
+        } else {
+            setSubmiteMessage({ success: false, message: "Network error: " + err.message });
+        }
+    }
+
+    return (
+        <>
+        <form action="/" method="post" className="signin-form" onSubmit={handleSubmit}>
                 <FormInput
                     InputFor="Username"
                     InputType="text"
@@ -57,32 +105,34 @@ export default function RegisterForm() {
                 <FormInput
                     InputFor="email"
                     InputType="email"
-                    placeHolder="Emain"
+                    placeHolder="Email"
                     content="Email"
                     handler={handleUserEmail}
                 />
                 <FormInput
                     InputFor="passwordOne"
-                    InputType="text"
+                    InputType="password"
                     placeHolder="Password"
                     content="Password"
                     handler={handleUserPass}
                 />
                 <FormInput
                     InputFor="passwordTwo"
-                    InputType="text"
-                    placeHolder="Password"
+                    InputType="password"
+                    placeHolder="Password confirm"
                     content="Password confirm"
                     handler={handleUserPassConfirm}
                 />
-                <FormSubmissionBtn 
+                <FormSubmissionBtn
                     content="Sign up"
                     submitRule="signup"
                 />
             </form>
-            {submiteMessage === null ? <></> : submiteMessage === false ?
-                <div style={submitFailed}>Passwords are not the same</div> : <div style={submitSuccess}>Submitted: Check your email</div>
-            }
-        </div>
+            {submiteMessage && (
+                <div style={submiteMessage.success ? submitSuccessStyle : submitFailedStyle}>
+                    {submiteMessage.message}
+                </div>
+            )}
+        </>
     );
 }

@@ -4,7 +4,6 @@ import Workspaces from "../Workspaces/Workspaces";
 import AccountSetting from '../AccountSetting/AccountSetting';
 import Calender from "../Calender/Calender";
 import { Route, Routes } from 'react-router-dom';
-
 import './Home.scss';
 
 export default function Home() {

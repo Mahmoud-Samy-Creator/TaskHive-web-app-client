@@ -53,13 +53,18 @@ export default function SideBar() {
                         <div className="icon-disc">Message</div>
                     </div>
                 </Link>
-                <Link to="/auth/login">
-                    <div className="icon logout">
-                        <FontAwesomeIcon icon={faRightFromBracket} />
-                        <div className="icon-disc">Logout</div>
-                    </div>
-                </Link>
+                <div className="icon logout" onClick={() => logOut()} >
+                    <FontAwesomeIcon icon={faRightFromBracket}/>
+                    <div className="icon-disc">Logout</div>
+                </div>
             </div>
         </div>
     );
+}
+
+function logOut() {
+    localStorage.clear();
+    setTimeout(() => {
+        document.location.reload();
+    }, 2000);
 }
