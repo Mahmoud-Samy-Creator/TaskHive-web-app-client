@@ -98,46 +98,42 @@
 			z-index: 100;
 			width: 500px;
 			height: 650px;
-			box-shadow: 1px -1px 111px -2px rgba(0, 0, 0, 0.75);
+			box-shadow: 1px -1px 111px -2px rgba(0,0,0,0.75);
+			-webkit-box-shadow: 1px -1px 111px -2px rgba(0,0,0,0.75);
+			-moz-box-shadow: 1px -1px 111px -2px rgba(0,0,0,0.75);
 			background-color: white;
-			@include border($border-color);
+			border: 5px solid $border-color;
 			text-align: center;
 			padding: 10px;
-			border-radius: 50%;
+			border-radius: 50px;
 			position: absolute;
 			left: 50%;
 			top: 50%;
 			transform: translate(-50%, -50%);
-
 			form {
 				margin-top: 50px;
-
 				label {
 					width: 20%;
 					text-align: left;
 				}
-
 				input,
 				textarea {
-					@include border($border-color);
+					border: 1px solid $border-color;
 					margin-left: 10px;
 					margin-bottom: 40px;
 					outline: none;
 					width: 60%;
 					padding: 10px;
 				}
-
 				.new-project-discription-input {
 					display: flex;
 					justify-content: center;
 					align-items: center;
-
 					textarea {
 						resize: none;
 						height: 70px;
 					}
 				}
-
 				input[type='submit'] {
 					background-color: $primary-color;
 					color: white;
@@ -145,8 +141,7 @@
 					padding: 15px;
 					margin-top: 40px;
 					border: none;
-					@include transition(0.2s);
-
+					transition: 0.2s;
 					&:hover {
 						background-color: #1976d2;
 					}

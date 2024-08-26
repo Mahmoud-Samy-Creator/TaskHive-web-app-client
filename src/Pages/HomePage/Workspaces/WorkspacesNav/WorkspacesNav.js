@@ -1,7 +1,7 @@
 import React from "react";
 import './WorkspacesNav.scss';
 import CurrentWorkspaces from "./CurrentWorkspaces/CurrentWorkspaces";
-import CurrentMembers from "./CurrentMembers/CurrentMembers";
+// import CurrentMembers from "./CurrentMembers/CurrentMembers";
 
 export default function WorkspacesNav() {
     return(

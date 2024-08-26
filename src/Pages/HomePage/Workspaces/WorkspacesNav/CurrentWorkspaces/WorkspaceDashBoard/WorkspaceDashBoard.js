@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import ProjectAddPopUp from "./ProjectAddPopUp/ProjectAddPopUp";
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import axios from "axios";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-
 import './WorkspaceDashBoard.scss';
 
 export default function WorkspaceDashBoard() {
@@ -49,6 +48,19 @@ export default function WorkspaceDashBoard() {
         })
     }, [workspaceId])
 
+    // Getting workspace existing Projects
+    useEffect(() => {
+        axios.get(`http://localhost:5000/workspaces/${workspaceId}/projects`, {
+            headers: {
+                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+            }
+        })
+        .then((res) => {
+            console.log(res);
+            setProjectsExists(res.data)
+        })
+    }, [workspaceId])
+
     // Change workspace name
     function handleWorkspaceNameChange(e) {
         e.preventDefault();
@@ -72,7 +84,6 @@ export default function WorkspaceDashBoard() {
             console.error("Error updating workspace name", err);
         });
     }
-    
 
     // Adding new workspace members to server
     function handleAddWorkspaceMembers(e) {
@@ -94,23 +105,36 @@ export default function WorkspaceDashBoard() {
         });
     }
 
+    function handleDeleteClick(e, id) {
+        e.preventDefault();
+        console.log(id);
+        handleDeleteProject(id);
+    }
+
     // Delete a project
     function handleDeleteProject(id) {
-        const newProjects = projectsExists.filter((project) => (project.id !==id))
-        setProjectsExists(newProjects);
+        axios.delete(`http://localhost:5000/workspaces/${workspaceId}/projects/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+            }
+        })
+        .then((res) => {
+            const newProjects = projectsExists.filter((project) => project._id !== id);
+            setProjectsExists(newProjects);
+        })
+        .catch((err) => {
+            console.error("Error deleting project", err);
+        });
     }
 
     return(
         <div className="workspace-dashBoard">
             <header className="workspace-header">
-                <form className="workspace-name" onSubmit={(e) => {handleWorkspaceNameChange(e)}}>
-                    <input
-                        type='text'
-                        placeholder={workspaceMetaData.name}
-                        onChange={(e) => {setWorkspaceNameInput(e.target.value)}}/>
-                    <button type='submit'>Change</button>
-                </form>
-                
+                <ChangeWorkspaceNameForm 
+                    workspaceName={workspaceMetaData.name}
+                    changeHandler={handleWorkspaceNameChange}
+                    changeInputHandler={setWorkspaceNameInput}
+                />
                 <div style={{display: "flex"}} className="workspace-members">
                     {TotalAvatars(WorkspaceMembers)}
                     <form onSubmit={(e) => {handleAddWorkspaceMembers(e)}}>
@@ -131,19 +155,22 @@ export default function WorkspaceDashBoard() {
                     styleHandler = {setDisplay}
                     projectsAdded = {projectsExists}
                     projectAddMethod = {setProjectsExists}
+                    workspaceId = {workspaceId}
                 />
                 <div className="workspace-project-add-button" onClick={() => setDisplay({display: "block"})}>
                     Add <br></br>Project
                 </div>
-                {projectsExists.map((project) => {
+                {projectsExists.map((project, index) => {
                     return(
-                        <Link key={project.id} to={`/home/workspaces/${workspaceId}/${project.name}`}>
-                            <div className="workspace-existing-projects" key={project.id}>
+                        <Link to={`/home/workspaces/${workspaceId}/${project.name}`}>
+                            <div className="workspace-existing-projects" key={index}>
                                 {project.name}
-                                <span className="project-delete-icon" onClick={(e) => {
-                                    e.preventDefault();
-                                    handleDeleteProject(project.id)
-                                }}><FontAwesomeIcon icon={faTrashCan} /></span>
+                                <span
+                                    className="project-delete-icon"
+                                    onClick={(e) => handleDeleteClick(e, project._id)}
+                                >
+                                    <FontAwesomeIcon icon={faTrashCan} />
+                                </span>
                             </div>
                         </Link>
                     );
@@ -153,6 +180,7 @@ export default function WorkspaceDashBoard() {
     );
 }
 
+// Visualizing workspace members
 function TotalAvatars(workspaceMembers) {
     return (
         
@@ -162,4 +190,17 @@ function TotalAvatars(workspaceMembers) {
             })}
         </AvatarGroup>
     );
+}
+
+// ChangingWorkspaceName
+function ChangeWorkspaceNameForm({workspaceName, changeHandler, changeInputHandler}) {
+    return(
+        <form className="workspace-name" onSubmit={(e) => {changeHandler(e)}}>
+            <input
+                type='text'
+                placeholder={workspaceName}
+                onChange={(e) => {changeInputHandler(e.target.value)}}/>
+            <button type='submit'>Change</button>
+        </form>
+    )
 }

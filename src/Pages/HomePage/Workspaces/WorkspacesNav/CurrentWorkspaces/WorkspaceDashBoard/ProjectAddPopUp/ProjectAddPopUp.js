@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 
-export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, projectAddMethod }){
+export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, projectAddMethod, workspaceId }){
+    const today = new Date().toISOString().split('T')[0];
     const formRef = useRef(null);
     const [newProjectDetails, setNewProjectDetails] = useState({
         name: "",
         disc: "",
-        startData: "",
-        endData: "",
-        id: null
+        startData: today,
+        endDate: "",
+        _id: null
     })
+
+    // Handling the new Project properties
     function handleProjectName(e) {
         setNewProjectDetails({...newProjectDetails, name: e.target.value})
     }
@@ -19,18 +23,34 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
         setNewProjectDetails({...newProjectDetails, startData: e.target.value})
     }
     function handleProjectEnd(e) {
-        setNewProjectDetails({...newProjectDetails, endData: e.target.value})
+        setNewProjectDetails({...newProjectDetails, endDate: e.target.value})
     }
+
+    // Adding the project to the database
     function handleAddingProjects(e) {
         e.preventDefault();
         styleHandler({display: "none"});
-        projectAddMethod([...projectsAdded, newProjectDetails]);
+        axios.post(`http://localhost:5000/workspaces/${workspaceId}/projects`,
+            {
+                "name": newProjectDetails.name,
+                "description": newProjectDetails.disc,
+                "deadline": newProjectDetails.endDate
+            },
+            {
+                headers: {
+                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
+            .then((res) => {
+                console.log(res);
+                projectAddMethod([...projectsAdded, {...newProjectDetails, _id: res.data["projectId"]}]);
+            })
+            .catch((err) => console.error(err));
         setNewProjectDetails({
             name: "",
             disc: "",
-            startData: "",
-            endData: "",
-            id: projectsAdded.length + 1,
+            startData: today,
+            endDate: "",
         })
     }
     useEffect(() => {
@@ -55,7 +75,8 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
                         id='project-name'
                         value={newProjectDetails.name}
                         onChange={(e) => {handleProjectName(e)}}
-                        required></input>
+                        required
+                    />
                 </div>
                 <div className="new-project-discription-input">
                     <label htmlFor='project-discription'>Discription: </label>
@@ -64,7 +85,8 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
                         id='project-discription'
                         value={newProjectDetails.disc}
                         onChange={(e) => {handleProjectDisc(e)}}
-                        required></textarea>
+                        required
+                    />
                 </div>
                 <div className="new-project-deadline-input">
                     <label htmlFor='start-date'>Start: </label>
@@ -73,16 +95,18 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
                         id="start-date"
                         name="start-date"
                         value={newProjectDetails.startData}
-                        onChange={(e) => {handleProjectStart(e)}}/>
+                        onChange={(e) => {handleProjectStart(e)}}
+                    />
                     <label htmlFor='end-date'>End: </label>
                     <input
                         type="date"
                         id="end-date"
                         name="end-date"
-                        value={newProjectDetails.endData}
-                        onChange={(e) => {handleProjectEnd(e)}}/>
+                        value={newProjectDetails.endDate}
+                        onChange={(e) => {handleProjectEnd(e)}}
+                    />
                 </div>
-                <input type='submit' value='Add'></input>
+                <input type='submit' value='Add' />
             </form>
         </div>
     );
