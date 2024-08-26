@@ -3,68 +3,65 @@ import { Link } from "react-router-dom";
 // import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCalendarDays, faComments } from "@fortawesome/free-regular-svg-icons";
-import { faRightFromBracket, faHouse, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faRightFromBracket, faHouse } from "@fortawesome/free-solid-svg-icons";
 import './SideBar.scss';
 
 export default function SideBar() {
-    // Trace the window width for responsivness
-    // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    // const [isOpen, setIsOpen] = useState(false);
-    // function handleWindowWidthChange() {
-    //     setWindowWidth(window.innerWidth);
-    //     window.innerWidth < 950 ? console.log(window.innerWidth) : console.log('');
-    // }
-    // useEffect(() => {
-    //     window.addEventListener('resize', handleWindowWidthChange);
-    //     return () => {
-    //         window.removeEventListener('resize', handleWindowWidthChange);
-    //     };
-    // }, [windowWidth]);
-    // Trace the window width for responsivness
-
     return (
         <div className="side-bar opened">
             <div className="side-bar-icons">
-                <div className="sidebar-on-mobile">
-                    <div className="logo">Logo</div>
-                    <FontAwesomeIcon className="wide-sideNav" icon={faBars} />
-                </div>
-                <Link to="/home/workspaces">
-                    <div className="icon">
-                        <FontAwesomeIcon icon={faHouse} />
-                        <div className="icon-disc">Home</div>
-                    </div>
-                </Link>
-                <Link to="/home/account-setting">
-                    <div className="icon">
-                        <FontAwesomeIcon icon={faUser} />
-                        <div className="icon-disc">Setting</div>
-                    </div>
-                </Link>
-                <Link to="/home/calender">
-                    <div className="icon">
-                        <FontAwesomeIcon icon={faCalendarDays} />
-                        <div className="icon-disc">Calender</div>
-                    </div>
-                </Link>
-                <Link to="/home">
-                    <div className="icon">
-                        <FontAwesomeIcon icon={faComments} />
-                        <div className="icon-disc">Message</div>
-                    </div>
-                </Link>
-                <div className="icon logout" onClick={() => logOut()} >
-                    <FontAwesomeIcon icon={faRightFromBracket}/>
-                    <div className="icon-disc">Logout</div>
-                </div>
+                <SideBarLinkNav params={{
+                    navLink: "/home/workspaces",
+                    icon: faHouse,
+                    name: "Home"
+                }}/>
+                <SideBarLinkNav params={{
+                    navLink: "/home/account-setting",
+                    icon: faUser,
+                    name: "Setting"
+                }}/>
+                <SideBarLinkNav params={{
+                    navLink: "/home/calender",
+                    icon: faCalendarDays,
+                    name: "Calender"
+                }}/>
+                <SideBarLinkNav params={{
+                    navLink: "/home",
+                    icon: faComments,
+                    name: "Message"
+                }}/>
+                <LogOutComponent params={{
+                    name: "Logout",
+                    icon: faRightFromBracket
+                }} />
             </div>
         </div>
     );
 }
 
-function logOut() {
+function SideBarLinkNav({ params }) {
+    return(
+        <Link to={params.navLink}>
+            <div className="icon">
+                <FontAwesomeIcon icon={params.icon} />
+                <div className="icon-disc">{params.name}</div>
+            </div>
+        </Link>
+    );
+}
+
+function LogOutComponent({ params }) {
+    return(
+        <div className="icon logout" onClick={() => logOutFunctionality()} >
+            <FontAwesomeIcon icon={params.icon}/>
+            <div className="icon-disc">{params.name}</div>
+        </div>
+    );
+}
+
+function logOutFunctionality() {
     localStorage.clear();
     setTimeout(() => {
         document.location.reload();
-    }, 2000);
+    }, 1000);
 }

@@ -7,7 +7,7 @@ export default function WorkspacesNav() {
     return(
         <div className="workspaces-nav">
             <CurrentWorkspaces />
-            <CurrentMembers />
+            {/* <CurrentMembers /> */}
         </div>
     );
 }

@@ -1,6 +1,6 @@
-import React from "react";
 import './AddWorkspaceForm.scss';
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 
 export default function AddWorkspaceForm({ workspaces, handler, style, styleHandler}) {
     const formRef = useRef(null);
@@ -10,7 +10,18 @@ export default function AddWorkspaceForm({ workspaces, handler, style, styleHand
     }
     function handleWorkspaceSubmit(e) {
         e.preventDefault();
-        handler([...workspaces, {id: workspaces.length + 1, name: workspaceName}]);
+        axios.post('http://localhost:5000/workspaces', {
+            "name": workspaceName,
+            "description": ""
+        },
+        {
+            headers: {
+                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+            }
+        })
+        .then((res) => {
+            handler([...workspaces, {id: res.data.workspaceId, name: workspaceName}]);
+        })
         styleHandler({display: "none"});
         setWorkspaceName('');
     }
@@ -26,7 +37,6 @@ export default function AddWorkspaceForm({ workspaces, handler, style, styleHand
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [formRef, styleHandler]);
-
     return(
         <div className="add-workspace-form" style={style} ref={formRef}>
             <span>Add workspace</span>
