@@ -55,9 +55,11 @@ export default function WorkspaceDashBoard() {
             }
         })
         .then((res) => {
-            console.log(res);
-            setProjectsExists(res.data)
+            if (res.status === 200) {
+                setProjectsExists(res.data)
+            }
         })
+        .catch((err) => console.error(err));
     }, [workspaceId])
 
     // Change workspace name
@@ -113,8 +115,11 @@ export default function WorkspaceDashBoard() {
     // Handle delete a project
     function handleDeleteClick(e, id) {
         e.preventDefault();
-        console.log(id);
         handleDeleteProject(id);
+    }
+
+    function handleProjectAdd(newProjects) {
+        setProjectsExists(newProjects);
     }
 
     // Delete a project
@@ -125,8 +130,10 @@ export default function WorkspaceDashBoard() {
             }
         })
         .then((res) => {
-            const newProjects = projectsExists.filter((project) => project.id !== id);
-            setProjectsExists(newProjects);
+            if (res.status === 200) {
+                const newProjects = projectsExists.filter((project) => project.id !== id);
+                setProjectsExists(newProjects);
+            }
         })
         .catch((err) => {
             console.error("Error deleting project", err);
@@ -160,7 +167,7 @@ export default function WorkspaceDashBoard() {
                     style = {ProjectAddPopUpStyle}
                     styleHandler = {setDisplay}
                     projectsAdded = {projectsExists}
-                    projectAddMethod = {setProjectsExists}
+                    projectAddMethod = {handleProjectAdd}
                     workspaceId = {workspaceId}
                 />
                 <div className="workspace-project-add-button" onClick={() => setDisplay({display: "block"})}>
@@ -171,8 +178,8 @@ export default function WorkspaceDashBoard() {
                         <ProjectsExists
                             workspaceId={workspaceId}
                             project={project}
-                            index={index}
                             handler={handleDeleteClick}
+                            key={index}
                         />
                     );
                 })}
@@ -181,10 +188,11 @@ export default function WorkspaceDashBoard() {
     );
 }
 
-function ProjectsExists({ workspaceId, project, index, handler }) {
+// Navigate to a project
+function ProjectsExists({ workspaceId, project, handler }) {
     return(
         <Link to={`/home/workspaces/${workspaceId}/projects/${project.id}`}>
-            <div className="workspace-existing-projects" key={index}>
+            <div className="workspace-existing-projects">
                 {project.name}
                 <span
                     className="project-delete-icon"

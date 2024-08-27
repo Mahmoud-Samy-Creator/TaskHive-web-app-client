@@ -6,11 +6,6 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function KanbanBoard({ workspaceId , projectId, projectTasks, setProjectTasks}) {
-    
-    const stateValues = projectTasks.map(task => task.state);
-    console.log(stateValues)
-
-
     const columnPlaceHolder = [
         { id: 1, className: "to-do", title: "To do", tasks: [
             {

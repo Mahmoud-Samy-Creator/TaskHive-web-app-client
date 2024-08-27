@@ -35,6 +35,9 @@ export default function CurrentWorkspaces() {
             if (res.status === 200) {
                 const newWorkSpaces = workspaces.filter((space) => space.id !== id);
                 setWorkspace(newWorkSpaces);
+                if (newWorkSpaces.length === 0) {
+                    window.location.href = '/home';
+                }
             }
         })
     }

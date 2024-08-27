@@ -26,7 +26,7 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
         setNewProjectDetails({...newProjectDetails, endDate: e.target.value})
     }
 
-    // Adding the project to the database
+    // Adding a project to a workspace
     function handleAddingProjects(e) {
         e.preventDefault();
         styleHandler({display: "none"});
@@ -42,8 +42,9 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
                 }
             })
             .then((res) => {
-                console.log(res);
-                projectAddMethod([...projectsAdded, {...newProjectDetails, id: res.data["projectId"]}]);
+                if (res.status === 201) {
+                    projectAddMethod([...projectsAdded, {...newProjectDetails, id: res.data["projectId"]}]);
+                }
             })
             .catch((err) => console.error(err));
         setNewProjectDetails({
@@ -65,9 +66,9 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
         };
     }, [formRef, styleHandler]);
     return(
-        <div className='add-project' ref={formRef} style={style}>
+        <div className='add-project' style={style}>
             <h2>Project details</h2>
-            <form onSubmit={handleAddingProjects}>
+            <form onSubmit={handleAddingProjects} ref={formRef}>
                 <div className="new-project-name-input">
                     <label htmlFor='project-name'>Name: </label>
                     <input

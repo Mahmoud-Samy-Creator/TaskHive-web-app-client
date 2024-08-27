@@ -57,6 +57,7 @@ export default function RegisterForm() {
                 };
                 console.log(data);
                 regPostRequest(data);
+                window.location.href = '/auth/login';
             } else {
                 setSubmiteMessage({ success: false, message: "Password must be more than 8 characters or more" });
             }
