@@ -10,6 +10,11 @@
 	transition: $duration;
 }
 
+@mixin displayColumn() {
+	display: flex;
+	flex-direction: column;
+}
+
 // Base styles
 .workspace-dashBoard {
 	flex-basis: 80%;
@@ -55,11 +60,11 @@
 
 				input {
 					@include border($border-color);
+					@include transition(0.2s);
 					margin: 0 20px;
 					padding-left: 10px;
 					width: fit-content;
-					@include transition(0.2s);
-
+					outline: none;
 					&:focus {
 						@include border($primary-color);
 					}
@@ -82,6 +87,35 @@
 		}
 	}
 
+	.member-avatar {
+		@include displayColumn();
+		position: relative;
+		cursor: pointer;
+		margin: 0 -3px;
+		transition: 0.2s;
+		.avatar-options {
+			@include displayColumn();
+			position: absolute;
+			top: 70px;
+			width: 500%;
+			z-index: 2;
+			background-color: $background-color;
+			border: 3px solid $border-color;
+			border-radius: 14px;
+			text-align: center;
+			button {
+				width: 80%;
+				margin: 10px auto;
+				border: none;
+				background-color: $primary-color;
+				color: white;
+				transition: 0.2s;
+				&:hover {
+					background-color: $secondry-color;
+				}
+			}
+		}
+	}
 	.workspace-projects {
 		display: flex;
 		position: relative;

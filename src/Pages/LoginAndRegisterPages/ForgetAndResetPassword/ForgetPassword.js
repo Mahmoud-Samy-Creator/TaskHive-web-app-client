@@ -15,7 +15,7 @@ export default function ForgetPassword() {
 								<SignupLoginRef
 									headerContent="Enter your email"
 									statment="You already have an account?"
-									hyperLink="/login"
+									hyperLink="/auth/login"
 									linkContent="login"
 								/>
 							</div>

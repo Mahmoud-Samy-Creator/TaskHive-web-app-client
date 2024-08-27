@@ -5,8 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function KanbanBoard() {
-    const [columns, setColumns] = useState([
+export default function KanbanBoard({ workspaceId , projectId, projectTasks, setProjectTasks}) {
+    
+    const stateValues = projectTasks.map(task => task.state);
+    console.log(stateValues)
+
+
+    const columnPlaceHolder = [
         { id: 1, className: "to-do", title: "To do", tasks: [
             {
                 id: uuidv4(),
@@ -34,8 +39,8 @@ export default function KanbanBoard() {
                 progrees: ""
             },
         ] },
-    ]);
-
+    ]
+    const [columns, setColumns] = useState([]);
     const [display, setDisplay] = useState({ display: "none" });
     const [newColumnTitle, setNewColumnTitle] = useState("");
     const formRef = useRef(null);
@@ -140,13 +145,11 @@ export default function KanbanBoard() {
                         setColumns={setColumns}
                     />
                 ))}
-
                 <div className='add-column-element' onClick={() => setDisplay({ display: "flex" })}>
                     <div>
                         <FontAwesomeIcon icon={faPlus} />
                         <span>Add column</span>
                     </div>
-
                     <form style={display} ref={formRef} onSubmit={handleSubmit}>
                         <input 
                             type='text' 
@@ -156,12 +159,8 @@ export default function KanbanBoard() {
                         />
                         <button type='submit'>Add</button>
                     </form>
-
                 </div>
-
             </div>
         </div>
     );
 }
-
-

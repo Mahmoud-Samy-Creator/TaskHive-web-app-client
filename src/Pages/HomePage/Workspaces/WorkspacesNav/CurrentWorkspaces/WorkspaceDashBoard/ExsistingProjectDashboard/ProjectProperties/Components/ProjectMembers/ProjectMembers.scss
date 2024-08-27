@@ -1,0 +1,46 @@
+@import '../../../../../../../../styleVariables';
+
+@media (min-width: 910px) {
+    .project-members {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        flex-basis: 50%;
+        form {
+            input, button {
+                height: 40px;
+            }
+            button {
+                background-color: $primary-color;
+                color: white;
+                border: none;
+                transition: 0.2s;
+                outline: none;
+                &:hover {
+                        background-color: $secondry-color;
+                    }
+            }
+            input {
+                margin: 0 10px;
+                outline: none;
+                border: 1px solid $border-color;
+                padding-left: 10px;
+            }
+        }
+        .member-avatar {
+            position: relative;
+            .delete-member-icon {
+                position: absolute;
+                font-size: 12px;
+                bottom: 0;
+                right: 0;
+                transition: 0.2s;
+                cursor: pointer;
+                &:hover {
+                    color: rgb(190, 0, 0);
+                }
+            }
+        }
+    }
+}

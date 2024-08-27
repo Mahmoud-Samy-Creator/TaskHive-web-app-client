@@ -9,7 +9,7 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
         disc: "",
         startData: today,
         endDate: "",
-        _id: null
+        id: null
     })
 
     // Handling the new Project properties
@@ -43,7 +43,7 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
             })
             .then((res) => {
                 console.log(res);
-                projectAddMethod([...projectsAdded, {...newProjectDetails, _id: res.data["projectId"]}]);
+                projectAddMethod([...projectsAdded, {...newProjectDetails, id: res.data["projectId"]}]);
             })
             .catch((err) => console.error(err));
         setNewProjectDetails({

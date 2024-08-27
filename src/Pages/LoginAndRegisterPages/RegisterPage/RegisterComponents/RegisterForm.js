@@ -49,12 +49,17 @@ export default function RegisterForm() {
     function handleSubmit(e) {
         e.preventDefault();
         if (userRegistationInfo.password === userRegistationInfo.passwordConfirmation) {
-            const data = {
-                "username": userRegistationInfo.username,
-                "email": userRegistationInfo.email,
-                "password": userRegistationInfo.password
-            };
-            regPostRequest(data);
+            if (userRegistationInfo.password.length >= 8) {
+                const data = {
+                    "username": userRegistationInfo.username,
+                    "email": userRegistationInfo.email,
+                    "password": userRegistationInfo.password
+                };
+                console.log(data);
+                regPostRequest(data);
+            } else {
+                setSubmiteMessage({ success: false, message: "Passwordmust be more than 8 characters" });
+            }
         } else {
             setSubmiteMessage({ success: false, message: "Passwords do not match" });
         }
@@ -63,7 +68,7 @@ export default function RegisterForm() {
     function regPostRequest(data) {
         axios.post('http://localhost:5000/auth/register', data)
             .then(res => {
-                console.log(res);
+                console.log(`From then, res code`, res.code);
                 if (res.status === 201) {
                     setSubmiteMessage({ success: true, message: "Submitted: Check your email" });
                 }

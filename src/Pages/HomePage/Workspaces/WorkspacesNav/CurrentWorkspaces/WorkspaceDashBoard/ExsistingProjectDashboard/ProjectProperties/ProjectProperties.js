@@ -1,13 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSheetPlastic, faPlus } from "@fortawesome/free-solid-svg-icons";
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
+import { faSheetPlastic } from "@fortawesome/free-solid-svg-icons";
+import ProjectMembers from './Components/ProjectMembers/ProjectMembers'
 
 const progressBar = 80;
 
-export default function ProjectProperties({ name }) {
+export default function ProjectProperties({ name, workspaceId, projectId }) {
     return(
         <div className="project-properties">
             <div>
@@ -22,18 +21,10 @@ export default function ProjectProperties({ name }) {
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div className="members"><TotalAvatars /></div>
-                    <div className="add-members">
-                        <button><FontAwesomeIcon icon={faPlus} /> Add members</button>
-                    </div>
-                </div>
+                <ProjectMembers workspaceId={workspaceId} projectId={projectId}/>
             </div>
             <div>
                 <ul>
-                    <li className="project-props-nav">
-                        <Link to='overview'>Overview</Link>
-                    </li>
                     <li className="project-props-nav">
                         <Link to='KanbanBoard'>Tasks</Link>
                     </li>
@@ -49,14 +40,3 @@ export default function ProjectProperties({ name }) {
     );
 }
 
-
-function TotalAvatars() {
-    return (
-    <AvatarGroup total={24}>
-        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-        <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-        <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-        <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
-    </AvatarGroup>
-    );
-}

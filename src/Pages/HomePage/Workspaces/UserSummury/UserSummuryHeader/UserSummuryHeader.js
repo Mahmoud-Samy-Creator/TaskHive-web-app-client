@@ -15,14 +15,14 @@ export default function UserSummuryHeader() {
             <div className='user-name-header'>
                 {userInfoParam.name}
             </div>
-            <div className='header-icons'>
+            {/* <div className='header-icons'>
                 <a href='/'>
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </a>
                 <a href='/'>
                     <FontAwesomeIcon icon={faBell} />
                 </a>
-            </div>
+            </div> */}
         </header>
     );
 }

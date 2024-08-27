@@ -4,8 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import ProjectAddPopUp from "./ProjectAddPopUp/ProjectAddPopUp";
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
+import TotalAvatars from "./TotalAvatars";
 import axios from "axios";
 import './WorkspaceDashBoard.scss';
 
@@ -17,7 +16,7 @@ export default function WorkspaceDashBoard() {
     const [WorkspaceMembers, setWorkspaceMembers] = useState([]);
 
     // Workspace members
-    const [memberName, setMemberName] = useState("")
+    const [memberEmail, setMemberEmail] = useState("")
 
     // Workspace Projects navigation
     const [ProjectAddPopUpStyle, setDisplay] = useState({display: "none"});
@@ -35,7 +34,7 @@ export default function WorkspaceDashBoard() {
             setWorkspaceNameInput(res.data.name);
         })
     }, [workspaceId]);
-    
+
     // Fetching workspace members
     useEffect(() => {
         axios.get(`http://localhost:5000/workspaces/${workspaceId}/members`, {
@@ -85,12 +84,12 @@ export default function WorkspaceDashBoard() {
         });
     }
 
-    // Adding new workspace members to server
+    // Adding new workspace members
     function handleAddWorkspaceMembers(e) {
         e.preventDefault();
-        axios.post(
-            `http://localhost:5000/workspaces/${workspaceId}/members`,
-            { "members": [memberName] },
+        axios.put(
+            `http://localhost:5000/workspaces/${workspaceId}/add_member`,
+            { "email": memberEmail },
             {
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem('authToken')}`
@@ -98,13 +97,20 @@ export default function WorkspaceDashBoard() {
             }
         )
         .then((res) => {
-            setMemberName("");
+            if (res.status === 200) {
+                setMemberEmail("");
+                setWorkspaceMembers((prevMembers) => [
+                    ...prevMembers,
+                    res.data.addedUser
+                ]);
+            }
         })
         .catch((err) => {
             console.error("Error adding members", err);
         });
     }
 
+    // Handle delete a project
     function handleDeleteClick(e, id) {
         e.preventDefault();
         console.log(id);
@@ -119,7 +125,7 @@ export default function WorkspaceDashBoard() {
             }
         })
         .then((res) => {
-            const newProjects = projectsExists.filter((project) => project._id !== id);
+            const newProjects = projectsExists.filter((project) => project.id !== id);
             setProjectsExists(newProjects);
         })
         .catch((err) => {
@@ -136,15 +142,15 @@ export default function WorkspaceDashBoard() {
                     changeInputHandler={setWorkspaceNameInput}
                 />
                 <div style={{display: "flex"}} className="workspace-members">
-                    {TotalAvatars(WorkspaceMembers)}
+                    <TotalAvatars WorkspaceMembers = {WorkspaceMembers} setWorkspaceMembers={setWorkspaceMembers}/>
                     <form onSubmit={(e) => {handleAddWorkspaceMembers(e)}}>
                         <input
-                            type='text'
+                            type='email'
                             placeholder="Enter member email"
-                            value={memberName}
-                            onChange={(e) => setMemberName(e.target.value)}
+                            value={memberEmail}
+                            onChange={(e) => setMemberEmail(e.target.value)}
                         />
-                        <button className="workspace-add-members"><FontAwesomeIcon icon={faPlus} /> Add members</button>
+                        <button className="workspace-add-members"><FontAwesomeIcon icon={faPlus} /> Add member</button>
                     </form>
                 </div>
             </header>
@@ -162,17 +168,12 @@ export default function WorkspaceDashBoard() {
                 </div>
                 {projectsExists.map((project, index) => {
                     return(
-                        <Link to={`/home/workspaces/${workspaceId}/${project.name}`}>
-                            <div className="workspace-existing-projects" key={index}>
-                                {project.name}
-                                <span
-                                    className="project-delete-icon"
-                                    onClick={(e) => handleDeleteClick(e, project._id)}
-                                >
-                                    <FontAwesomeIcon icon={faTrashCan} />
-                                </span>
-                            </div>
-                        </Link>
+                        <ProjectsExists
+                            workspaceId={workspaceId}
+                            project={project}
+                            index={index}
+                            handler={handleDeleteClick}
+                        />
                     );
                 })}
             </div>
@@ -180,15 +181,19 @@ export default function WorkspaceDashBoard() {
     );
 }
 
-// Visualizing workspace members
-function TotalAvatars(workspaceMembers) {
-    return (
-        
-        <AvatarGroup total={workspaceMembers.length} style={{width: "fit-content"}}>
-            {workspaceMembers.map((member, index) => {
-                return(<Avatar alt={member.email} src={`/static/images/avatar/${index}.jpg`} key={member.id}/>);
-            })}
-        </AvatarGroup>
+function ProjectsExists({ workspaceId, project, index, handler }) {
+    return(
+        <Link to={`/home/workspaces/${workspaceId}/projects/${project.id}`}>
+            <div className="workspace-existing-projects" key={index}>
+                {project.name}
+                <span
+                    className="project-delete-icon"
+                    onClick={(e) => handler(e, project.id)}
+                >
+                    <FontAwesomeIcon icon={faTrashCan} />
+                </span>
+            </div>
+        </Link>
     );
 }
 

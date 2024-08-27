@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 // import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faCalendarDays, faComments } from "@fortawesome/free-regular-svg-icons";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faRightFromBracket, faHouse } from "@fortawesome/free-solid-svg-icons";
 import './SideBar.scss';
 
@@ -19,16 +19,6 @@ export default function SideBar() {
                     navLink: "/home/account-setting",
                     icon: faUser,
                     name: "Setting"
-                }}/>
-                <SideBarLinkNav params={{
-                    navLink: "/home/calender",
-                    icon: faCalendarDays,
-                    name: "Calender"
-                }}/>
-                <SideBarLinkNav params={{
-                    navLink: "/home",
-                    icon: faComments,
-                    name: "Message"
                 }}/>
                 <LogOutComponent params={{
                     name: "Logout",

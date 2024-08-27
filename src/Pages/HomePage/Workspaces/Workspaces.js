@@ -11,8 +11,8 @@ export default function Workspaces() {
             <WorkspacesNav />
             <Routes path='/'>
                 <Route path='/' element={<UserSummury />} index/>
-                <Route path=':workspaceId' element={<WorkspaceDashBoard />}/>
-                <Route path=':workspaceId/:projectName/*' element={<ProjectDashboard />}/>
+                <Route path=':workspaceId/projects' element={<WorkspaceDashBoard />}/>
+                <Route path=':workspaceId/projects/:projectId/*' element={<ProjectDashboard />}/>
             </Routes>
         </div>
     )

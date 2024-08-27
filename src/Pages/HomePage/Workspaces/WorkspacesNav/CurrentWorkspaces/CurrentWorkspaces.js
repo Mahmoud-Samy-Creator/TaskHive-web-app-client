@@ -8,6 +8,18 @@ import axios from "axios";
 export default function CurrentWorkspaces() {
     const [workspaceAddFormDisplay, setworkspaceAddFormDisplay] = useState({display: "none"});
     const [workspaces, setWorkspace] = useState([])
+
+    // Getting Existing workspaces
+    useEffect(() => {
+        axios.get('http://localhost:5000/workspaces', {
+            headers: {
+                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+            }
+        })
+        .then((res) => setWorkspace(res.data))
+    }, [])
+
+    // Handle delete workspace
     function handleWorkspaceDelete(id) {
         axios.delete(`http://localhost:5000/workspaces/${id}`, {
             headers: {
@@ -19,21 +31,14 @@ export default function CurrentWorkspaces() {
             setWorkspace(newWorkSpaces);
         })
     }
-    useEffect(() => {
-        axios.get('http://localhost:5000/workspaces', {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
-        .then((res) => setWorkspace(res.data))
-    }, [])
+
     return(
         <div className="cuurent-workspaces">
             <span>Workspaces</span>
             <div className="workspaces-choice">
                 {workspaces.map((space) => {
                     return(
-                        <Link key={space.id} className="workspace-choosed" to={`/home/workspaces/${space.id}`}>
+                        <Link key={space.id} className="workspace-choosed" to={`/home/workspaces/${space.id}/projects`}>
                             <span className="workspace-name">{space.name}</span>
                             <DeleteWorkspaceAction deleteHandler={handleWorkspaceDelete} spaceId={space.id}/>
                         </Link>
