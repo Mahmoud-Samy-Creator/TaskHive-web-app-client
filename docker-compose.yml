@@ -15,6 +15,8 @@ services:
       - project_manager
     ports:
       - "80:80"
+    environment:
+      - "BACKEND_URL=project_manager_backend"
   backend:
     image: davenchy/project-manager:beta
     container_name: project_manager_backend
