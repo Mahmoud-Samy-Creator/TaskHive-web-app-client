@@ -12,7 +12,6 @@ import { Navigate } from "react-router-dom";
 
 export default function ProjectDashboard() {
     const { workspaceId, projectId } = useParams();
-    const [projectTasks, setProjectTasks] = useState({})
     const [projectInfo, setProjectInfo] = useState({
         "id": "",
         "name": "",
@@ -35,26 +34,7 @@ export default function ProjectDashboard() {
         .catch((err) => {
             console.error(err);
         })
-
         // Get project tasks
-        // Get Projects tasks
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/tasks`,
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
-        )
-        .then((res) => {
-            if (res.status === 200) {
-                setProjectTasks(res.data);
-                const allTasks = res.data;
-                console.log(allTasks)
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-        })
     }, [workspaceId, projectId]);
 
     return (
@@ -74,8 +54,6 @@ export default function ProjectDashboard() {
                         <KanbanBoard
                             workspaceId={workspaceId}
                             projectId={projectId}
-                            projectTasks={projectTasks}
-                            setProjectTasks={setProjectTasks}
                         />
                     }
                 />

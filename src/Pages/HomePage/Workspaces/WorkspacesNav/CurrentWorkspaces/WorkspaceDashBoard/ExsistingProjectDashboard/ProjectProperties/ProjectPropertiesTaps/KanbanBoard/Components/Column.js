@@ -1,17 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import AddTaskForm from "./AddTaskForm";
+import axios from "axios";
+import { IDS } from "../DashboardIDs";
 
-export default function Column({ className, title, column, addTaskToColumn, setColumns, columns }) {
-
+export default function Column({ className, title, column, setColumns, columns }) {
+    const ids = useContext(IDS);
     // Handle deletion of a task
     function handleDeleteTask(taskId) {
-        const updatedTasks = column.tasks.filter((task) => task.id !== taskId);
-        const updatedColumns = columns.map(col => 
-            col.id === column.id ? { ...col, tasks: updatedTasks } : col
-        );
-        setColumns(updatedColumns);
+        console.log(taskId);
+        axios.delete(`http://localhost:5000/workspaces/${ids.workspaceId}/projects/${ids.projectId}/tasks/${taskId}`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        )
+        .then((res) => {
+            if (res.status === 200) {
+                const updatedTasks = column.tasks.filter((task) => task.id !== taskId);
+                const updatedColumns = columns.map(col => 
+                    col.id === column.id ? { ...col, tasks: updatedTasks } : col
+                );
+                setColumns(updatedColumns);
+            }
+        })
+        .catch((err) => console.log(err));
+        
     }
 
     // Handle update of a task
@@ -25,11 +41,19 @@ export default function Column({ className, title, column, addTaskToColumn, setC
         setColumns(updatedColumns);
     }
 
+    // Handle delete columns
     function handleDeleteColumn(id) {
         const newColumns = columns.filter((column) => column.id !== id);
         setColumns(newColumns);
     }
 
+    // Adding task to a column
+    function addTaskToColumn(columnId, taskName, taskId) {
+        const newTask = { id: taskId, name: taskName };
+        setColumns(columns.map(column =>
+            column.id === columnId ? { ...column, tasks: [...column.tasks, newTask] } : column
+        ));
+    }
     return (
         <div className={className} id='todo-lane'>
             <header>
@@ -39,20 +63,19 @@ export default function Column({ className, title, column, addTaskToColumn, setC
                     handleDeleteColumn(column.id);
                 }}/>
             </header>
-            <AddTaskForm columnId={column.id} addTaskToColumn={addTaskToColumn} />
-            {column.tasks.map((task) => (
+            <AddTaskForm column ={column} addTaskToColumn={addTaskToColumn} />
+            {column.tasks.map((task, index) => (
                 <Task
-                    key={task.id}
+                    key={index}
                     task={task}
                     parentColumn={column}
                     handleDeleteTask={handleDeleteTask}
-                    updateTask={handleUpdateTask}  // Pass the update handler to the Task component
+                    updateTask={handleUpdateTask}
                 />
             ))}
         </div>
     );
 }
-
 
 function Task({ task, handleDeleteTask, updateTask }) {
     const [taskPropFormDisplay, setTaskPropFormDisplay] = useState({ display: "none" });
@@ -127,8 +150,8 @@ function TaskPropForm({ formRef, handleFormSubmit, task, updateTask }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        updateTask(taskEditDetails);  // Pass the updated task data to the parent
-        handleFormSubmit();  // Close the form
+        updateTask(taskEditDetails);
+        handleFormSubmit();
     }
 
     return (
@@ -153,3 +176,4 @@ function TaskPropForm({ formRef, handleFormSubmit, task, updateTask }) {
         </form>
     );
 }
+
