@@ -58,7 +58,7 @@ export default function RegisterForm() {
                 console.log(data);
                 regPostRequest(data);
             } else {
-                setSubmiteMessage({ success: false, message: "Passwordmust be more than 8 characters" });
+                setSubmiteMessage({ success: false, message: "Password must be more than 8 characters or more" });
             }
         } else {
             setSubmiteMessage({ success: false, message: "Passwords do not match" });
@@ -68,7 +68,6 @@ export default function RegisterForm() {
     function regPostRequest(data) {
         axios.post('http://localhost:5000/auth/register', data)
             .then(res => {
-                console.log(`From then, res code`, res.code);
                 if (res.status === 201) {
                     setSubmiteMessage({ success: true, message: "Submitted: Check your email" });
                 }
@@ -99,7 +98,7 @@ export default function RegisterForm() {
 
     return (
         <>
-        <form action="/" method="post" className="signin-form" onSubmit={handleSubmit}>
+            <form className="signin-form" onSubmit={handleSubmit}>
                 <FormInput
                     InputFor="Username"
                     InputType="text"

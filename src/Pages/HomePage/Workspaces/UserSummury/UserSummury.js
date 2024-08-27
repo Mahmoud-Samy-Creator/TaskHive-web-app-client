@@ -1,9 +1,7 @@
 import React from "react";
 import './UserSummury.scss';
-// import UserInfo from "./UserInfo/UserInfo";
 import ProjectsDemands from "./WordspacesDemands/ProjectsDemands";
 import UserSummuryHeader from "./UserSummuryHeader/UserSummuryHeader";
-// import UserSummuryFeeds from "./UserSummuryFeeds/UserSummuryFeeds";
 import { userInfoJson } from "./Contexts/UserInfoContext";
 
 const userInformation = {
@@ -23,9 +21,7 @@ export default function UserSummury() {
             <div className='user-summury'>
                 <UserSummuryHeader />
                 <section className='user-summury-content'>
-                    {/* <UserInfo /> */}
                     <ProjectsDemands />
-                    {/* <UserSummuryFeeds /> */}
                 </section>
             </div>
         </userInfoJson.Provider>

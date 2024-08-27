@@ -1,16 +1,6 @@
 * {
   font-family: "Poppins", sans-serif;
 }
-
-.p-relative {
-  position: relative;
-}
-.p-absolute {
-  position: absolute;
-}
-.d-flex {
-  display: flex;
-}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -22,7 +12,6 @@ body {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
-
 }
 
 code {

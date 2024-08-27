@@ -1,5 +1,5 @@
 import React from "react";
-import SocialMediaIcons from "./SocialMediaIcons";
+// import SocialMediaIcons from "./SocialMediaIcons";
 
 export default function FormHeader({headerContent, rule}) {
     return(
@@ -7,7 +7,7 @@ export default function FormHeader({headerContent, rule}) {
                 <div className="w-100">
                     <h3 className="mb-4">{headerContent}</h3>
                 </div>
-                {(rule) ? <SocialMediaIcons /> : <></>}
+                {/* {(rule) ? <SocialMediaIcons /> : <></>} */}
             </div>
     );
 }

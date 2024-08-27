@@ -16,7 +16,12 @@ export default function CurrentWorkspaces() {
                 "Authorization":`Bearer ${localStorage.getItem('authToken')}`
             }
         })
-        .then((res) => setWorkspace(res.data))
+        .then((res) => {
+            if (res.status === 200) {
+                setWorkspace(res.data)
+            }
+        })
+        .catch((err) => console.error(err))
     }, [])
 
     // Handle delete workspace
@@ -26,9 +31,11 @@ export default function CurrentWorkspaces() {
                 "Authorization":`Bearer ${localStorage.getItem('authToken')}`
             }
         })
-        .then(() => {
-            const newWorkSpaces = workspaces.filter((space) => space.id !== id);
-            setWorkspace(newWorkSpaces);
+        .then((res) => {
+            if (res.status === 200) {
+                const newWorkSpaces = workspaces.filter((space) => space.id !== id);
+                setWorkspace(newWorkSpaces);
+            }
         })
     }
 
