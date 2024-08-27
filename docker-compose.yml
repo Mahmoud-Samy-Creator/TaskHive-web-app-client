@@ -7,7 +7,7 @@ networks:
 services:
   frontend:
     image: davenchy/taskhive:beta
-    container_name: task_hive_frontend
+    container_name: taskhive_frontend
     restart: unless-stopped
     depends_on:
       - backend
