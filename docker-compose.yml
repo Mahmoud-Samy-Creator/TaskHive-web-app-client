@@ -1,0 +1,42 @@
+volumes:
+  mongodb: {}
+
+networks:
+  project_manager: {}
+
+services:
+  frontend:
+    image: davenchy/taskhive:beta
+    container_name: taskhive_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - project_manager
+    ports:
+      - "80:80"
+    environment:
+      - "BACKEND_HOST=project_manager_backend"
+  backend:
+    image: davenchy/project-manager:beta
+    container_name: project_manager_backend
+    restart: unless-stopped
+    depends_on:
+      - database
+    networks:
+      - project_manager
+    expose:
+      - 5000
+    environment:
+      - "SERVER_HOST=0.0.0.0"
+      - "DB_HOST=project_manager_database"
+  database:
+    image: mongodb/mongodb-community-server:latest
+    container_name: project_manager_database
+    restart: unless-stopped
+    networks:
+      - project_manager
+    expose:
+      - 27017
+    volumes:
+      - "mongodb:/data/db"
