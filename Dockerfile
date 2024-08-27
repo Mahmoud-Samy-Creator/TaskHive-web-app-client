@@ -1,13 +1,23 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
+
+RUN apk add --no-cache gcompat
 
 WORKDIR /app
 
-COPY package.json .
+COPY package*.json ./
+COPY src ./src
+COPY public ./public
 
-RUN npm install
+RUN npm ci && npm run build
 
-COPY . .
+FROM nginx:alpine
 
-EXPOSE 3000
+LABEL maintainer="Davenchy <firon1222@gmail.com>"
+LABEL description="TaskHive a projects management tool"
 
-CMD ["npm", "start"]
+WORKDIR /app
+
+COPY --from=builder /app/build .
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
