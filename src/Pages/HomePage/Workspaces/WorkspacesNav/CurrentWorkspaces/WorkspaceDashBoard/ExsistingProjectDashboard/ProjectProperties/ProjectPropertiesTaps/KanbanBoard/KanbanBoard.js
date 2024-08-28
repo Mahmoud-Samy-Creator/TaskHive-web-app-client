@@ -79,7 +79,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             });
             return closestTask;
         }
-    
+
         const handleDragOver = (e) => {
             e.preventDefault();
             const curTask = document.querySelector(".is-dragging");
@@ -94,54 +94,70 @@ export default function KanbanBoard({ workspaceId, projectId }) {
     
         const handleDrop = (e, targetColumn) => {
             e.preventDefault();
-            taskDraggingInfo.state = targetColumn.getAttribute('data-column-title');
-            console.log("Task dropped in column:", taskDraggingInfo.state);
-        };
     
+            // Ensure drop only happens on a valid column
+            if (targetColumn && targetColumn.classList.contains('column')) {
+                taskDraggingInfo.state = targetColumn.getAttribute('data-column-title');
+                console.log("Task dropped in column:", taskDraggingInfo.state);
+            }
+        };
+
         const draggables = document.querySelectorAll('.task');
         const droppables = document.querySelectorAll('.column');
-    
+
         draggables.forEach((task) => {
             task.addEventListener('dragstart', () => {
                 task.classList.add('is-dragging');
             });
             task.addEventListener('dragend', () => {
                 task.classList.remove('is-dragging');
-                taskDraggingInfo.id = task.getAttribute('data-task-id');
-                taskDraggingInfo.title = task.getAttribute('data-task-title');
+                
+                // Only proceed if task was dropped on a valid droppable column
+                if (taskDraggingInfo.state) {
+                    taskDraggingInfo.id = task.getAttribute('data-task-id');
+                    taskDraggingInfo.title = task.getAttribute('data-task-title');
     
-                console.log(`Task dragging id: ${taskDraggingInfo.id}`);
-                console.log(`Task dragging Title: ${taskDraggingInfo.title }`);
+                    console.log(`Task dragging id: ${taskDraggingInfo.id}`);
+                    console.log(`Task dragging Title: ${taskDraggingInfo.title }`);
 
-                // Handle the backEnd edit
-                axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/tasks/${taskDraggingInfo.id}`,
-                    {
-                        "title": taskDraggingInfo.title,
-                        "body": "Updated description of the task.",
-                        "deadline": "2024-09-01",
-                        "state": taskDraggingInfo.state,
-                        "labels": [
-                            "backend",
-                            "urgent"
-                        ]
-                    },
-                    {
-                        headers: {
-                            "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+                    // Handle the backEnd edit
+                    axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/tasks/${taskDraggingInfo.id}`,
+                        {
+                            "title": taskDraggingInfo.title,
+                            "body": "Updated description of the task.",
+                            "deadline": "2024-09-01",
+                            "state": taskDraggingInfo.state,
+                            "labels": [
+                                "backend",
+                                "urgent"
+                            ]
+                        },
+                        {
+                            headers: {
+                                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+                            }
                         }
-                    }
-                )
-                .then((res) => {
-                    console.log(res)
-                })
+                    )
+                    .then((res) => {
+                        console.log(res);
+                    })
+                    .catch((err) => {
+                        console.error("Error updating task:", err);
+                    });
+                } else {
+                    console.log("Task was not dropped in a valid column.");
+                }
+
+                // Reset taskDraggingInfo state after dragend
+                taskDraggingInfo.state = "";
             });
         });
-    
+
         droppables.forEach((zone) => {
             zone.addEventListener('dragover', handleDragOver);
             zone.addEventListener('drop', (e) => handleDrop(e, zone));
         });
-    
+
         return () => {
             draggables.forEach((task) => {
                 task.removeEventListener('dragstart', () => {});

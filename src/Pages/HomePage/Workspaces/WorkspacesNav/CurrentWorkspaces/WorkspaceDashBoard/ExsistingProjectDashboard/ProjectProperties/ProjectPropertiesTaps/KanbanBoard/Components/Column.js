@@ -44,7 +44,6 @@ export default function Column({ title, column, setColumns, columns }) {
 }
     // Handle update of a task
 
-
     // Adding task to a column
     function addTaskToColumn(columnId, taskName, taskId) {
         const newTask = { id: taskId, name: taskName };
@@ -97,7 +96,6 @@ function Task({ task, handleDeleteTask, updateTask }) {
             className="task" 
             data-task-id={task.id}
             data-task-title={task.name}
-            data-task-info={task}
             draggable="true"
         >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
