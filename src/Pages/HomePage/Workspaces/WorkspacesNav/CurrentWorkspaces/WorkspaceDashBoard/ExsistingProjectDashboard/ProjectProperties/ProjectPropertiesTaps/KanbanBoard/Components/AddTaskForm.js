@@ -33,7 +33,6 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
                 }
             }
         })
-        
     }
     return (
         <form className='task-add-form' onSubmit={handleTaskAdd}>

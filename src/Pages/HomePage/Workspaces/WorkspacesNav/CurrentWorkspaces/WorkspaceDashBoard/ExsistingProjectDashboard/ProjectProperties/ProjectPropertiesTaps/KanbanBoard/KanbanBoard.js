@@ -6,6 +6,11 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { IDS } from './DashboardIDs';
 
+let taskDraggingInfo = {
+    id: null,
+    state: "",
+    title: ""
+}
 export default function KanbanBoard({ workspaceId, projectId }) {
     const [columns, setColumns] = useState([]);
     const [display, setDisplay] = useState({ display: "none" });
@@ -42,8 +47,6 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                     tasks: fetchedTasks
                         .filter(task => task.state === state)
                         .map(task => ({
-                            // Here the task will get it's ID from the database
-                            // This id is temp
                             id: task.id,
                             name: task.title,
                             startAt: "",
@@ -64,11 +67,11 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             const els = zone.querySelectorAll('.task:not(.is-dragging)');
             let closestTask = null;
             let closestOffset = Number.NEGATIVE_INFINITY;
-        
+    
             els.forEach((task) => {
                 const { top } = task.getBoundingClientRect();
                 const offset = mouseY - top;
-                
+    
                 if (offset < 0 && offset > closestOffset) {
                     closestOffset = offset;
                     closestTask = task;
@@ -76,35 +79,69 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             });
             return closestTask;
         }
-
+    
         const handleDragOver = (e) => {
             e.preventDefault();
             const curTask = document.querySelector(".is-dragging");
             const bottomTask = insertAboveTask(e.currentTarget, e.clientY);
-            
+    
             if (!bottomTask) {
                 e.currentTarget.appendChild(curTask);
             } else {
                 e.currentTarget.insertBefore(curTask, bottomTask);
             }
         };
-
+    
+        const handleDrop = (e, targetColumn) => {
+            e.preventDefault();
+            taskDraggingInfo.state = targetColumn.getAttribute('data-column-title');
+            console.log("Task dropped in column:", taskDraggingInfo.state);
+        };
+    
         const draggables = document.querySelectorAll('.task');
         const droppables = document.querySelectorAll('.column');
-
+    
         draggables.forEach((task) => {
             task.addEventListener('dragstart', () => {
                 task.classList.add('is-dragging');
             });
             task.addEventListener('dragend', () => {
                 task.classList.remove('is-dragging');
+                taskDraggingInfo.id = task.getAttribute('data-task-id');
+                taskDraggingInfo.title = task.getAttribute('data-task-title');
+    
+                console.log(`Task dragging id: ${taskDraggingInfo.id}`);
+                console.log(`Task dragging Title: ${taskDraggingInfo.title }`);
+
+                // Handle the backEnd edit
+                axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/tasks/${taskDraggingInfo.id}`,
+                    {
+                        "title": taskDraggingInfo.title,
+                        "body": "Updated description of the task.",
+                        "deadline": "2024-09-01",
+                        "state": taskDraggingInfo.state,
+                        "labels": [
+                            "backend",
+                            "urgent"
+                        ]
+                    },
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+                        }
+                    }
+                )
+                .then((res) => {
+                    console.log(res)
+                })
             });
         });
-
+    
         droppables.forEach((zone) => {
             zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('drop', (e) => handleDrop(e, zone));
         });
-
+    
         return () => {
             draggables.forEach((task) => {
                 task.removeEventListener('dragstart', () => {});
@@ -112,9 +149,11 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             });
             droppables.forEach((zone) => {
                 zone.removeEventListener('dragover', handleDragOver);
+                zone.removeEventListener('drop', () => {});
             });
         };
-    }, [columns]);
+    }, [columns, projectId, workspaceId]);
+    
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -136,8 +175,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             <div className="kanban-board">
                 <div className="columns">
                     {columns.map((column) => (
-                        <Column 
-                            className={`${column.className} column`}
+                        <Column
                             title={column.title}
                             key={column.id}
                             column={column}
@@ -164,6 +202,5 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                 </div>
             </div>
         </IDS.Provider>
-        
     );
 }

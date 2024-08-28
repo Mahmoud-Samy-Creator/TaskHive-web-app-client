@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEraser, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faEraser } from "@fortawesome/free-solid-svg-icons";
 import AddTaskForm from "./AddTaskForm";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
 
-export default function Column({ className, title, column, setColumns, columns }) {
+export default function Column({ title, column, setColumns, columns }) {
     const ids = useContext(IDS);
-    // Handle deletion of a task
+
+    // Handle Delete task
     function handleDeleteTask(taskId) {
         console.log(taskId);
         axios.delete(`http://localhost:5000/workspaces/${ids.workspaceId}/projects/${ids.projectId}/tasks/${taskId}`,
@@ -29,23 +30,20 @@ export default function Column({ className, title, column, setColumns, columns }
         .catch((err) => console.log(err));
         
     }
+    // Handle Delete task
 
     // Handle update of a task
     function handleUpdateTask(updatedTask) {
         const updatedTasks = column.tasks.map((task) =>
             task.id === updatedTask.id ? updatedTask : task
-        );
-        const updatedColumns = columns.map(col =>
-            col.id === column.id ? { ...col, tasks: updatedTasks } : col
-        );
-        setColumns(updatedColumns);
-    }
+    );
+    const updatedColumns = columns.map(col =>
+        col.id === column.id ? { ...col, tasks: updatedTasks } : col
+    );
+    setColumns(updatedColumns);
+}
+    // Handle update of a task
 
-    // Handle delete columns
-    function handleDeleteColumn(id) {
-        const newColumns = columns.filter((column) => column.id !== id);
-        setColumns(newColumns);
-    }
 
     // Adding task to a column
     function addTaskToColumn(columnId, taskName, taskId) {
@@ -55,13 +53,9 @@ export default function Column({ className, title, column, setColumns, columns }
         ));
     }
     return (
-        <div className={className} id='todo-lane'>
+        <div className="column" id='todo-lane' data-column-title={column.title}>
             <header>
                 <h3>{title}</h3>
-                <FontAwesomeIcon icon={faTrashCan} className="delete-task-icon" onClick={(e) => {
-                    e.preventDefault();
-                    handleDeleteColumn(column.id);
-                }}/>
             </header>
             <AddTaskForm column ={column} addTaskToColumn={addTaskToColumn} />
             {column.tasks.map((task, index) => (
@@ -101,6 +95,9 @@ function Task({ task, handleDeleteTask, updateTask }) {
         <div 
             onClick={() => setTaskPropFormDisplay({ display: "flex" })} 
             className="task" 
+            data-task-id={task.id}
+            data-task-title={task.name}
+            data-task-info={task}
             draggable="true"
         >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
