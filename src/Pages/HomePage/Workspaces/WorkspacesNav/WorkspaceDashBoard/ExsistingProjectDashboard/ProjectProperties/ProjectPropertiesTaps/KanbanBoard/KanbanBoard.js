@@ -1,16 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './KanbanBoard.scss';
 import Column from './Components/Column';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { IDS } from './DashboardIDs';
+import './KanbanBoard.scss';
 
 let taskDraggingInfo = {
     id: null,
     state: "",
     title: ""
 }
+
+// API Params
+const apiURL = `http://localhost:5000/workspaces`;
+const apiConfig = {
+    headers: {
+        "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+    }
+};
+// API Params
+
 export default function KanbanBoard({ workspaceId, projectId }) {
     const [columns, setColumns] = useState([]);
     const [display, setDisplay] = useState({ display: "none" });
@@ -31,11 +41,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
 
     useEffect(() => {
         // Get all project tasks
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/tasks`, {
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.get(`${apiURL}/${workspaceId}/projects/${projectId}/tasks`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
                 const fetchedTasks = res.data;
@@ -121,7 +127,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                     console.log(`Task dragging Title: ${taskDraggingInfo.title }`);
 
                     // Handle the backEnd edit
-                    axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/tasks/${taskDraggingInfo.id}`,
+                    axios.put(`${apiURL}/${workspaceId}/projects/${projectId}/tasks/${taskDraggingInfo.id}`,
                         {
                             "title": taskDraggingInfo.title,
                             "body": "Updated description of the task.",
@@ -132,11 +138,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                                 "urgent"
                             ]
                         },
-                        {
-                            headers: {
-                                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-                            }
-                        }
+                        apiConfig
                     )
                     .then((res) => {
                         console.log(res);

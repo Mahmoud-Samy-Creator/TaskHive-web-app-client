@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser } from "@fortawesome/free-solid-svg-icons";
 import AddTaskForm from "./AddTaskForm";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
+
+const apiURL = `http://localhost:5000/workspaces`;
+const apiConfig = {
+    headers: {
+        "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+    }
+};
 
 export default function Column({ title, column, setColumns, columns }) {
     const ids = useContext(IDS);
@@ -11,13 +19,7 @@ export default function Column({ title, column, setColumns, columns }) {
     // Handle Delete task
     function handleDeleteTask(taskId) {
         console.log(taskId);
-        axios.delete(`http://localhost:5000/workspaces/${ids.workspaceId}/projects/${ids.projectId}/tasks/${taskId}`,
-            {
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
-        )
+        axios.delete(`${apiURL}/${ids.workspaceId}/projects/${ids.projectId}/tasks/${taskId}`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
                 const updatedTasks = column.tasks.filter((task) => task.id !== taskId);
@@ -119,7 +121,6 @@ function Task({ task, handleDeleteTask, updateTask }) {
                     task={task}
                     updateTask={updateTask}
                 />
-                <div className="temp">Temp</div>
             </div>
         </div>
     );

@@ -15,7 +15,7 @@ const apiConfig = {
     }
 };
 
-export default function WorkspaceDashBoard() {
+export default function WorkspaceDashBoard({ workspaceName, workspaceNameStateHandler }) {
     // Workspace meta data
     const {workspaceId} = useParams();
     const [workspaceMetaData, setworkspaceMetaData] = useState({});
@@ -74,7 +74,6 @@ export default function WorkspaceDashBoard() {
             console.error("Error updating workspace name", err);
         });
     }
-
     // Adding new workspace members
     function handleAddWorkspaceMembers(e) {
         e.preventDefault();
@@ -159,7 +158,7 @@ export default function WorkspaceDashBoard() {
                             workspaceId={workspaceId}
                             project={project}
                             handler={handleDeleteClick}
-                            key={index}
+                            key={project.id}
                         />
                     );
                 })}

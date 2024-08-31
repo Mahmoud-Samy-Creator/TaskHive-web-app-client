@@ -3,11 +3,20 @@ import { useParams } from "react-router-dom";
 import './UpdateProjectInfo.scss';
 import axios from "axios";
 
-export default function UpdateProjectInfo({ projectInfo, visible, handleVisiblity }) {
+
+// CLEANUP
+const apiURL= `http://localhost:5000/workspaces`;
+const apiConfig = {
+    headers: {
+        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+    }
+};
+
+export default function UpdateProjectInfo({ projectInfo, setProjectInfo, visible, handleVisiblity }) {
     const [projectUpdateInfo, setProjectUpdateInfo] = useState({
-        name: "",
-        disc: "",
-        deadline: ""
+        "name": "",
+        "description": "",
+        "deadline": ""
     });
     const formRef = useRef(null);
     const { workspaceId, projectId } = useParams();
@@ -15,9 +24,9 @@ export default function UpdateProjectInfo({ projectInfo, visible, handleVisiblit
     // Update state when projectInfo changes
     useEffect(() => {
         setProjectUpdateInfo({
-            name: projectInfo.name || "",
-            disc: projectInfo.description || "",
-            deadline: projectInfo.deadline || ""
+            "name": projectInfo.name || "",
+            "description": projectInfo.description || "",
+            "deadline": projectInfo.deadline || ""
         });
     }, [projectInfo]);
 
@@ -49,26 +58,18 @@ export default function UpdateProjectInfo({ projectInfo, visible, handleVisiblit
     function handleFormSubmission(e) {
         e.preventDefault();
         // Make API call with updated data
-        axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}`,
-            {
-                "name": `${projectUpdateInfo.name}`,
-                "description": `${projectUpdateInfo.disc}`,
-                "deadline": `${projectUpdateInfo.deadline}`
-            },
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
+        axios.put(`${apiURL}/${workspaceId}/projects/${projectId}`,
+            projectUpdateInfo, apiConfig
         )
         .then((res) => {
-            console.log(res)
             handleVisiblity({display: "none"});
+            setProjectInfo((prevData) => ({
+                ...prevData, name: projectUpdateInfo.name,
+                            description: projectUpdateInfo.disc,
+                            deadline: projectUpdateInfo.deadline,
+            }))
         })
-        .then((err) => {
-            console.log(err)
-        })
-        console.log("Updated project info:", projectUpdateInfo);
+        .catch((err) => {console.log(err)})
     }
 
     return(
@@ -77,8 +78,8 @@ export default function UpdateProjectInfo({ projectInfo, visible, handleVisiblit
                 <div className="project-name-edit-div">
                     <label htmlFor="project-name-edit">Name: </label>
                     <input
-                        type="text"
                         id="project-name-edit"
+                        type="text"
                         value={projectUpdateInfo.name}
                         onChange={handleNameInput}
                     />
@@ -94,8 +95,8 @@ export default function UpdateProjectInfo({ projectInfo, visible, handleVisiblit
                 <div className="project-deadline-edit-div">
                     <label htmlFor="project-deadline-edit">Deadline: </label>
                     <input
-                        type="date"
                         id="project-deadline-edit"
+                        type="date"
                         value={projectUpdateInfo.deadline}
                         onChange={handleDeadlineInput}
                     />

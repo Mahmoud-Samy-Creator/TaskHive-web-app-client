@@ -20,16 +20,15 @@ const apiConfig = {
 export default function ProjectDashboard() {
     const { workspaceId, projectId } = useParams();
     const [projectInfo, setProjectInfo] = useState({
-        "id": "",
-        "name": "",
-        "description": "",
-        "deadline": "",
+        id: "",
+        name: "",
+        description: "",
+        deadline: "",
     })
     const [ProjectInfoUpdatePopUp, setProjectInfoUpdatePopUp] = useState({display: "none"});
     useEffect(() => {
         // Get project information
-        axios.get(`${apiURL}/${workspaceId}/projects/${projectId}`, apiConfig
-        )
+        axios.get(`${apiURL}/${workspaceId}/projects/${projectId}`, apiConfig)
         .then((res) => {
             setProjectInfo(res.data);
         })
@@ -45,6 +44,7 @@ export default function ProjectDashboard() {
             <ProjectProperties name={projectInfo.name} workspaceId={workspaceId} projectId={projectId} />
             <UpdateProjectInfo
                 projectInfo={projectInfo}
+                setProjectInfo={setProjectInfo}
                 visible={ProjectInfoUpdatePopUp}
                 handleVisiblity={setProjectInfoUpdatePopUp}
             />

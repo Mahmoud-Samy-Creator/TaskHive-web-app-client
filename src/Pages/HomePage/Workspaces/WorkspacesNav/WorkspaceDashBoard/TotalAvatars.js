@@ -4,6 +4,15 @@ import axios from "axios";
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 
+// API Params
+const apiConfig = {
+    headers: {
+        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+    }
+};
+const apiURL = `http://localhost:5000/workspaces`;
+// API Params
+
 
 export default function TotalAvatars({ WorkspaceMembers, setWorkspaceMembers }) {
     const [visibleOptions, setVisibleOptions] = useState(null);
@@ -29,15 +38,7 @@ export default function TotalAvatars({ WorkspaceMembers, setWorkspaceMembers }) 
 
     function handleChangeOwner(id) {
         console.log(id)
-        axios.put(`http://localhost:5000/workspaces/${workspaceId}/change_owner`,
-            {
-                "newOwnerId": `${id}`
-            },
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            })
+        axios.put(`${apiURL}/${workspaceId}/change_owner`, {"newOwnerId": `${id}`} , apiConfig)
         .then((res) => console.log(res))
         .catch((err) => {
             console.error(err)
@@ -46,15 +47,7 @@ export default function TotalAvatars({ WorkspaceMembers, setWorkspaceMembers }) 
     }
 
     function handleDeleteOwner(id) {
-        axios.put(`http://localhost:5000/workspaces/${workspaceId}/remove_members`,
-            {
-            "members": [`${id}`]
-            },
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            })
+        axios.put(`${apiURL}/${workspaceId}/remove_members`, {"members": [`${id}`]} ,apiConfig)
         .then((res) => {
             const newMembers = WorkspaceMembers.filter((member) => member.id !== id);
             setWorkspaceMembers(newMembers);
