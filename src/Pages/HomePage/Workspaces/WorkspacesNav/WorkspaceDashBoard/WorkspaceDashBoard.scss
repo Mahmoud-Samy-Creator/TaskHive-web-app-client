@@ -1,5 +1,5 @@
 // Import variables
-@import '../../../../styleVariables';
+@import '../../../styleVariables';
 
 // Mixins for common styles
 @mixin border($color) {
@@ -13,6 +13,12 @@
 @mixin displayColumn() {
 	display: flex;
 	flex-direction: column;
+}
+
+@mixin displayCenter() {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 // Base styles
@@ -192,15 +198,13 @@
 
 		.workspace-project-add-button,
 		.workspace-existing-projects {
+			@include displayCenter();
+			@include transition(0.3s);
 			width: 200px;
 			height: 250px;
 			border-radius: 14px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
 			font-size: 20px;
 			text-align: center;
-			@include transition(0.3s);
 			cursor: pointer;
 		}
 
@@ -247,8 +251,4 @@
 			}
 		}
 	}
-}
-
-@media (min-width: 950px) {
-	// Media queries can be separated into their own partial for better organization.
 }

@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
-import './ProjectDashboard.scss';
+import { useParams, Routes, Route, Navigate } from "react-router-dom";
 import UpdateProjectInfo from "./UpdateProjectInfo/UpdateProjectInfo";
 import DashboardHeader from "./DashboardHeader/DashboardHeader";
 import ProjectProperties from './ProjectProperties/ProjectProperties';
 import KanbanBoard from "./ProjectProperties/ProjectPropertiesTaps/KanbanBoard/KanbanBoard";
 import ProjectNotes from "./ProjectProperties/ProjectPropertiesTaps/ProjectNotes/ProjectNotes";
 import ProjectQuestions from "./ProjectProperties/ProjectPropertiesTaps/ProjectQuestions/ProjectQuestions";
-import { useParams, Routes, Route } from "react-router-dom";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import './ProjectDashboard.scss';
+
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+const apiConfig = {
+    headers: {
+        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+    }
+};
 
 export default function ProjectDashboard() {
     const { workspaceId, projectId } = useParams();
@@ -21,12 +28,7 @@ export default function ProjectDashboard() {
     const [ProjectInfoUpdatePopUp, setProjectInfoUpdatePopUp] = useState({display: "none"});
     useEffect(() => {
         // Get project information
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}`,
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
+        axios.get(`${apiURL}/${workspaceId}/projects/${projectId}`, apiConfig
         )
         .then((res) => {
             setProjectInfo(res.data);
@@ -60,7 +62,6 @@ export default function ProjectDashboard() {
                 <Route path="notes" element={<ProjectNotes />} />
                 <Route path="questions" element={<ProjectQuestions />} />
             </Routes>
-
         </div>
     );
 }

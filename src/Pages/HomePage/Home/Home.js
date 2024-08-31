@@ -7,17 +7,20 @@ import { Route, Routes } from 'react-router-dom';
 import './Home.scss';
 import axios from "axios";
 
+const apiURL = `http://localhost:5000/auth/me`;
+const apiConfig = {
+    headers: {
+        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+    }
+};
+
 export default function Home() {
 
     // UserInfo from API state
     const [userInfo, setUserInfo] = useState(null);
     useEffect(() => {
         // Getting signed user Info
-        axios.get(`http://localhost:5000/auth/me`, {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.get(apiURL, apiConfig)
         .then((res) => setUserInfo(res.data))
         .catch((err) => console.error(err));
     }, [])

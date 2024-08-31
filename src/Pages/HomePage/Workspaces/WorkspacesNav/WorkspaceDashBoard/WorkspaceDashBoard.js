@@ -8,6 +8,13 @@ import TotalAvatars from "./TotalAvatars";
 import axios from "axios";
 import './WorkspaceDashBoard.scss';
 
+const apiURL = "http://localhost:5000/workspaces";
+const apiConfig = {
+    headers: {
+        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
+    }
+};
+
 export default function WorkspaceDashBoard() {
     // Workspace meta data
     const {workspaceId} = useParams();
@@ -24,11 +31,7 @@ export default function WorkspaceDashBoard() {
 
     // Fetching Workspace metaData
     useEffect(() => {
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}`, {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.get(`${apiURL}/${workspaceId}`, apiConfig)
         .then((res) => {
             setworkspaceMetaData(res.data);
             setWorkspaceNameInput(res.data.name);
@@ -37,11 +40,7 @@ export default function WorkspaceDashBoard() {
 
     // Fetching workspace members
     useEffect(() => {
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/members`, {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.get(`${apiURL}/${workspaceId}/members`, apiConfig)
         .then((res) => {
             setWorkspaceMembers(res.data);
         })
@@ -49,11 +48,7 @@ export default function WorkspaceDashBoard() {
 
     // Getting workspace existing Projects
     useEffect(() => {
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/projects`, {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.get(`${apiURL}/${workspaceId}/projects`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
                 setProjectsExists(res.data)
@@ -66,14 +61,8 @@ export default function WorkspaceDashBoard() {
     function handleWorkspaceNameChange(e) {
         e.preventDefault();
         axios.put(
-            `http://localhost:5000/workspaces/${workspaceId}`,
-            { name: workspaceNameInput, description: "" },
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-                },
-            }
-        )
+            `${apiURL}/${workspaceId}`,
+            { name: workspaceNameInput, description: "" }, apiConfig)
         .then((res) => {
             setworkspaceMetaData((prevData) => ({
                 ...prevData,
@@ -90,13 +79,8 @@ export default function WorkspaceDashBoard() {
     function handleAddWorkspaceMembers(e) {
         e.preventDefault();
         axios.put(
-            `http://localhost:5000/workspaces/${workspaceId}/add_member`,
-            { "email": memberEmail },
-            {
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
+            `${apiURL}/${workspaceId}/add_member`,
+            { "email": memberEmail }, apiConfig
         )
         .then((res) => {
             if (res.status === 200) {
@@ -124,11 +108,7 @@ export default function WorkspaceDashBoard() {
 
     // Delete a project
     function handleDeleteProject(id) {
-        axios.delete(`http://localhost:5000/workspaces/${workspaceId}/projects/${id}`, {
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.delete(`${apiURL}/${workspaceId}/projects/${id}`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
                 const newProjects = projectsExists.filter((project) => project.id !== id);
