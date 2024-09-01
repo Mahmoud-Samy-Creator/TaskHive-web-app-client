@@ -27,6 +27,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
     const [newColumnTitle, setNewColumnTitle] = useState("");
     const formRef = useRef(null);
 
+    // Adding new column
     useEffect(() => {
         function handleClickOutside(event) {
             if (formRef.current && !formRef.current.contains(event.target)) {
@@ -45,6 +46,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
         .then((res) => {
             if (res.status === 200) {
                 const fetchedTasks = res.data;
+                console.log(fetchedTasks)
                 const uniqueStates = Array.from(new Set(fetchedTasks.map(task => task.state)));
                 const columnsWithTasks = uniqueStates.map((state, index) => ({
                     id: index + 1,
@@ -54,10 +56,14 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                         .filter(task => task.state === state)
                         .map(task => ({
                             id: task.id,
-                            name: task.title,
-                            startAt: "",
+                            title: task.title,
+                            body: task.body,
+                            labels: task.labels,
+                            isArchived: task.isArchived,
+                            deadline : task.deadline,
+                            checklists: task.checklists,
+                            startAt: task.createdAt.split(`T`)[0],
                             endAt: task.deadline,
-                            progress: ""
                         }))
                 }));
                 setColumns(columnsWithTasks);
@@ -73,11 +79,11 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             const els = zone.querySelectorAll('.task:not(.is-dragging)');
             let closestTask = null;
             let closestOffset = Number.NEGATIVE_INFINITY;
-    
+
             els.forEach((task) => {
                 const { top } = task.getBoundingClientRect();
                 const offset = mouseY - top;
-    
+
                 if (offset < 0 && offset > closestOffset) {
                     closestOffset = offset;
                     closestTask = task;
@@ -90,17 +96,17 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             e.preventDefault();
             const curTask = document.querySelector(".is-dragging");
             const bottomTask = insertAboveTask(e.currentTarget, e.clientY);
-    
+
             if (!bottomTask) {
                 e.currentTarget.appendChild(curTask);
             } else {
                 e.currentTarget.insertBefore(curTask, bottomTask);
             }
         };
-    
+
         const handleDrop = (e, targetColumn) => {
             e.preventDefault();
-    
+
             // Ensure drop only happens on a valid column
             if (targetColumn && targetColumn.classList.contains('column')) {
                 taskDraggingInfo.state = targetColumn.getAttribute('data-column-title');
@@ -122,7 +128,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                 if (taskDraggingInfo.state) {
                     taskDraggingInfo.id = task.getAttribute('data-task-id');
                     taskDraggingInfo.title = task.getAttribute('data-task-title');
-    
+
                     console.log(`Task dragging id: ${taskDraggingInfo.id}`);
                     console.log(`Task dragging Title: ${taskDraggingInfo.title }`);
 
@@ -136,9 +142,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                             "labels": [
                                 "backend",
                                 "urgent"
-                            ]
-                        },
-                        apiConfig
+                            ]}, apiConfig
                     )
                     .then((res) => {
                         console.log(res);
@@ -146,9 +150,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                     .catch((err) => {
                         console.error("Error updating task:", err);
                     });
-                } else {
-                    console.log("Task was not dropped in a valid column.");
-                }
+                } else {console.log("Task was not dropped in a valid column.")};
 
                 // Reset taskDraggingInfo state after dragend
                 taskDraggingInfo.state = "";
@@ -194,7 +196,6 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                 <div className="columns">
                     {columns.map((column) => (
                         <Column
-                            title={column.title}
                             key={column.id}
                             column={column}
                             columns={columns}

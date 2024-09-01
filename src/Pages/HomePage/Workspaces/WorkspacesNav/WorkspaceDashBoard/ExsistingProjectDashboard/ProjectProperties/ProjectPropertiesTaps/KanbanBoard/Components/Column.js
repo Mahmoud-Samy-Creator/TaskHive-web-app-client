@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-
+import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser } from "@fortawesome/free-solid-svg-icons";
 import AddTaskForm from "./AddTaskForm";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
 
+// API Params
 const apiURL = `http://localhost:5000/workspaces`;
 const apiConfig = {
     headers: {
@@ -13,7 +14,7 @@ const apiConfig = {
     }
 };
 
-export default function Column({ title, column, setColumns, columns }) {
+export default function Column({ column, setColumns, columns }) {
     const ids = useContext(IDS);
 
     // Handle Delete task
@@ -30,9 +31,7 @@ export default function Column({ title, column, setColumns, columns }) {
             }
         })
         .catch((err) => console.log(err));
-        
     }
-    // Handle Delete task
 
     // Handle update of a task
     function handleUpdateTask(updatedTask) {
@@ -44,7 +43,6 @@ export default function Column({ title, column, setColumns, columns }) {
     );
     setColumns(updatedColumns);
 }
-    // Handle update of a task
 
     // Adding task to a column
     function addTaskToColumn(columnId, taskName, taskId) {
@@ -54,9 +52,9 @@ export default function Column({ title, column, setColumns, columns }) {
         ));
     }
     return (
-        <div className="column" id='todo-lane' data-column-title={column.title}>
+        <div className="column" data-column-title={column.title}>
             <header>
-                <h3>{title}</h3>
+                <h3>{column.title}</h3>
             </header>
             <AddTaskForm column ={column} addTaskToColumn={addTaskToColumn} />
             {column.tasks.map((task, index) => (
@@ -72,6 +70,7 @@ export default function Column({ title, column, setColumns, columns }) {
     );
 }
 
+// Task 
 function Task({ task, handleDeleteTask, updateTask }) {
     const [taskPropFormDisplay, setTaskPropFormDisplay] = useState({ display: "none" });
     const formRef = useRef(null);
@@ -93,47 +92,51 @@ function Task({ task, handleDeleteTask, updateTask }) {
     }
 
     return (
-        <div 
-            onClick={() => setTaskPropFormDisplay({ display: "flex" })} 
-            className="task" 
-            data-task-id={task.id}
-            data-task-title={task.name}
-            draggable="true"
-        >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
-                <p className="task-name">{task.name}</p>
-                <FontAwesomeIcon icon={faEraser} style={{ color: "#2c4654" }} onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteTask(task.id);
-                }} />
+        <>
+            <div 
+                onClick={() => setTaskPropFormDisplay({ display: "flex" })}
+                className="task"
+                data-task-id={task.id}
+                data-task-title={task.title}
+                draggable="true"
+            >
+                <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    <p className="task-name">{task.title}</p>
+                    <FontAwesomeIcon icon={faEraser} style={{ color: "#2c4654" }} onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteTask(task.id);
+                    }} />
+                </div>
+                <div className="task-details">
+                    <p>Start: {task.startAt}</p>
+                    <p>End: {task.deadline}</p>
+                </div>
             </div>
-            <div className="task-details">
-                <p>Start: {task.startAt}</p>
-                <p>End: {task.endAt}</p>
-            </div>
-            <div>
-                <span className="task-progress">Progress: {task.progress}</span>
-            </div>
-            <div style={taskPropFormDisplay} className="task-prop-customize">
-                <TaskPropForm 
-                    formRef={formRef} 
-                    handleFormSubmit={handleFormSubmit} 
-                    task={task}
-                    updateTask={updateTask}
-                />
-            </div>
-        </div>
+            {
+                ReactDOM.createPortal(
+                <div style={taskPropFormDisplay} className="task-prop-customize">
+                    <div className="task-customization-settings">
+                        <TaskPropForm 
+                            formRef={formRef} 
+                            handleFormSubmit={handleFormSubmit} 
+                            task={task}
+                            updateTask={updateTask}
+                        />
+                    </div>
+                </div>, document.getElementById('task-customize-global'))
+            }
+            
+        </>
     );
 }
 
 function TaskPropForm({ formRef, handleFormSubmit, task, updateTask }) {
     const [taskEditDetails, setTaskDetails] = useState({
         id: task.id,
-        name: task.name,
-        disc: task.disc || "",
-        startAt: task.startAt || "",
-        endAt: task.endAt || "",
-        progress: task.progress || ""
+        title: task.title,
+        body: task.body || "",
+        createdAt: task.createdAt || "",
+        deadline: task.deadline || "",
     });
 
     function handleChange(e) {
@@ -153,23 +156,22 @@ function TaskPropForm({ formRef, handleFormSubmit, task, updateTask }) {
     return (
         <form ref={formRef} onSubmit={handleSubmit}>
             <div className="taskName-input">
-                <label htmlFor="name">Name: </label>
-                <input type="text" id='name' value={taskEditDetails.name} onChange={handleChange}/>
+                <label htmlFor="title">Name: </label>
+                <input type="text" id='title' value={taskEditDetails.title} onChange={handleChange}/>
             </div>
             <div className="taskName-discription">
-                <label htmlFor="disc">Disc: </label>
-                <textarea id='disc' value={taskEditDetails.disc} onChange={handleChange}/>
+                <label htmlFor="body">Disc: </label>
+                <textarea id='body' value={taskEditDetails.body} onChange={handleChange}/>
             </div>
             <div className="taskStartDate-input">
-                <label htmlFor="startAt">Start: </label>
-                <input type="date" id='startAt' value={taskEditDetails.startAt} onChange={handleChange}/>
+                <label htmlFor="createdAt">Start: </label>
+                <input type="date" id='createdAt' value={taskEditDetails.createdAt} onChange={handleChange}/>
             </div>
             <div className="taskEndDate-input">
-                <label htmlFor="endAt">End: </label>
-                <input type="date" id='endAt' value={taskEditDetails.endAt} onChange={handleChange}/>
+                <label htmlFor="deadline">End: </label>
+                <input type="date" id='deadline' value={taskEditDetails.deadline} onChange={handleChange}/>
             </div>
             <button type='submit'>Done</button>
         </form>
     );
 }
-
