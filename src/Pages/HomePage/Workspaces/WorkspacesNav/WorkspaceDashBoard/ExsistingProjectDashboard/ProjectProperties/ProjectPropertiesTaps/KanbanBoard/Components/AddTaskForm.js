@@ -6,6 +6,7 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
     const [taskInput, setTaskInput] = useState("");
     const ids = useContext(IDS);
 
+    // This function is for adding new task to the column
     function handleTaskAdd(e) {
         e.preventDefault();
         axios.post(`http://localhost:5000/workspaces/${ids.workspaceId}/projects/${ids.projectId}/tasks`,
@@ -28,11 +29,23 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
         .then((res) => {
             if (res.status === 201) {
                 if (taskInput.trim()) {
-                    addTaskToColumn(column.id, taskInput, res.data.taskId);
+                    const newTask = {
+                        id: res.data.taskId,
+                        title: taskInput,
+                        body: "Description of the task.",
+                        startAt: new Date().toISOString().split('T')[0],
+                        deadline: "",
+                        labels: [],
+                        state: column.title,
+                    };
+                    addTaskToColumn(column.id, newTask);
                     setTaskInput("");
                 }
             }
         })
+        .catch(error => {
+            console.error("Error adding task:", error);
+        });
     }
     return (
         <form className='task-add-form' onSubmit={handleTaskAdd}>
@@ -42,7 +55,7 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
                 id='task-add-input' 
                 onChange={(e) => setTaskInput(e.target.value)}
             />
-            <button type='submit' style={{display: "flex", justifyContent: "center", alignItems: "center"}}>Add</button>
+            <button type='submit'>Add</button>
         </form>
     );
 }

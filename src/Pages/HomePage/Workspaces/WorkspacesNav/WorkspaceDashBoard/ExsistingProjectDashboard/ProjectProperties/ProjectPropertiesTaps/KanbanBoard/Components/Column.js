@@ -45,8 +45,7 @@ export default function Column({ column, setColumns, columns }) {
 }
 
     // Adding task to a column
-    function addTaskToColumn(columnId, taskName, taskId) {
-        const newTask = { id: taskId, name: taskName };
+    function addTaskToColumn(columnId, newTask) {
         setColumns(columns.map(column =>
             column.id === columnId ? { ...column, tasks: [...column.tasks, newTask] } : column
         ));
@@ -57,9 +56,9 @@ export default function Column({ column, setColumns, columns }) {
                 <h3>{column.title}</h3>
             </header>
             <AddTaskForm column ={column} addTaskToColumn={addTaskToColumn} />
-            {column.tasks.map((task, index) => (
+            {column.tasks.map((task) => (
                 <Task
-                    key={index}
+                    key={task.id}
                     task={task}
                     parentColumn={column}
                     handleDeleteTask={handleDeleteTask}

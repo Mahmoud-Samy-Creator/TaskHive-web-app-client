@@ -123,7 +123,6 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             });
             task.addEventListener('dragend', () => {
                 task.classList.remove('is-dragging');
-                
                 // Only proceed if task was dropped on a valid droppable column
                 if (taskDraggingInfo.state) {
                     taskDraggingInfo.id = task.getAttribute('data-task-id');
@@ -173,7 +172,6 @@ export default function KanbanBoard({ workspaceId, projectId }) {
             });
         };
     }, [columns, projectId, workspaceId]);
-    
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -210,8 +208,8 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                         </div>
                         <form style={display} ref={formRef} onSubmit={handleSubmit}>
                             <input 
-                                type='text' 
-                                placeholder='name' 
+                                type='text'
+                                placeholder='name'
                                 value={newColumnTitle}
                                 onChange={(e) => setNewColumnTitle(e.target.value)} 
                             />
