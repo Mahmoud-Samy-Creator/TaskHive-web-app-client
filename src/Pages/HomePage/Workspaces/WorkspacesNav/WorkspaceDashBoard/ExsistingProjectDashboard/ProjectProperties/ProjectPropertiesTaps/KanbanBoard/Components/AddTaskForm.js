@@ -12,13 +12,10 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
         axios.post(`http://localhost:5000/workspaces/${ids.workspaceId}/projects/${ids.projectId}/tasks`,
             {
                 "title": taskInput,
-                "body": "Description of the task.",
+                "body": "",
                 "deadline": "2024-08-30",
                 "state": column.title,
-                "labels": [
-                    "frontend",
-                    "high-priority"
-                ]
+                "labels": []
             },
             {
                 headers: {
@@ -32,9 +29,10 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
                     const newTask = {
                         id: res.data.taskId,
                         title: taskInput,
-                        body: "Description of the task.",
-                        startAt: new Date().toISOString().split('T')[0],
+                        body: "",
+                        startAt: "",
                         deadline: "",
+                        createdAt: "",
                         labels: [],
                         state: column.title,
                     };

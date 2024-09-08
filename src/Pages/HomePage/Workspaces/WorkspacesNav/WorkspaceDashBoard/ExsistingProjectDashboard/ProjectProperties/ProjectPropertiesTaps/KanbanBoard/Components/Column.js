@@ -107,7 +107,9 @@ function Task({ task, handleDeleteTask, updateTask }) {
                     }} />
                 </div>
                 <div className="task-details">
-                    <p>Start: {task.startAt}</p>
+                    {/* Getting the start date from api request */}
+                    {/* <p>Start: {task.startAt}</p> */}
+                    <p>Start: </p>
                     <p>End: {task.deadline}</p>
                 </div>
             </div>
@@ -146,27 +148,30 @@ function TaskPropForm({ formRef, handleFormSubmit, task, updateTask }) {
         }));
     }
 
+    // Handle submit to edit tasks props
     function handleSubmit(e) {
         e.preventDefault();
         updateTask(taskEditDetails);
+        console.log(task.id)
         handleFormSubmit();
     }
 
     return (
-        <form ref={formRef} onSubmit={handleSubmit}>
-            <div className="taskName-input">
+        <form ref={formRef} onSubmit={handleSubmit} style={{flexBasis: "100%", padding: "15px 50px"}}>
+            <div className="taskName-input" style={{marginBottom: "100px"}}>
                 <label htmlFor="title">Name: </label>
                 <input type="text" id='title' value={taskEditDetails.title} onChange={handleChange}/>
             </div>
-            <div className="taskName-discription">
+            <div className="taskName-discription" style={{marginBottom: "100px"}}>
                 <label htmlFor="body">Disc: </label>
                 <textarea id='body' value={taskEditDetails.body} onChange={handleChange}/>
             </div>
-            <div className="taskStartDate-input">
+            {/* Edit after adding to the database | After adding to  */}
+            <div className="taskStartDate-input" style={{marginBottom: "100px"}}>
                 <label htmlFor="createdAt">Start: </label>
                 <input type="date" id='createdAt' value={taskEditDetails.createdAt} onChange={handleChange}/>
             </div>
-            <div className="taskEndDate-input">
+            <div className="taskEndDate-input" style={{marginBottom: "100px"}}>
                 <label htmlFor="deadline">End: </label>
                 <input type="date" id='deadline' value={taskEditDetails.deadline} onChange={handleChange}/>
             </div>
