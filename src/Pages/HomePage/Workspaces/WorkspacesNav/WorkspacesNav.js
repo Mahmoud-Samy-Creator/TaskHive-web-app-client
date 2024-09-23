@@ -1,5 +1,6 @@
 import React from "react";
 import AddWorkspaceForm from "./AddWorkspaceForm/AddWorkspaceForm";
+import { AlertDialog } from "./MainComponents/AlertDialog";
 
 // Import needed contexts
 import ApiReqContext from "../Contexts/ApiContext";
@@ -11,11 +12,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import './WorkspacesNav.scss';
 
-
 export default function WorkspacesNav() {
-
     const [workspaceAddFormDisplay, setworkspaceAddFormDisplay] = React.useState({display: "none"});
-    const [workspaces, setWorkspace] = React.useState([])
+    const [workspaces, setWorkspace] = React.useState([]);
+
+    // Delete modal state managment
+    const [spaceIDModal, setSpaceIDModal] = React.useState();
+    const [open, setOpen] = React.useState(false);
+
     const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Getting Existing workspaces
@@ -44,11 +48,17 @@ export default function WorkspacesNav() {
             <div className="cuurent-workspaces">
                 <span>Workspaces</span>
                 <div className="workspaces-choice">
+                    <AlertDialog open={open} setOpen={setOpen} spaceIDModal={spaceIDModal} handler={handleWorkspaceDelete}/>
                     {workspaces.map((space) => {
                         return(
                             <Link key={space.id} className="workspace-choosed" to={`/home/workspaces/${space.id}/projects`}>
                                 <span className="workspace-name">{space.name}</span>
-                                <DeleteWorkspaceAction deleteHandler={handleWorkspaceDelete} spaceId={space.id}/>
+                                <DeleteWorkspaceAction
+                                    setOpen={setOpen}
+                                    setSpaceIDModal={setSpaceIDModal}
+                                    deleteHandler={handleWorkspaceDelete}
+                                    spaceId={space.id}
+                                />
                             </Link>
                         );
                     })}
@@ -78,13 +88,14 @@ function AddWorkSpacePlaceholer({ styleHandler }) {
 }
 
 // Handle delete workspaces component
-function DeleteWorkspaceAction({ deleteHandler, spaceId }) {
+function DeleteWorkspaceAction({ spaceId, setOpen, setSpaceIDModal }) {
     return(
         <span onClick={(e) => {
             e.preventDefault();
-            deleteHandler(spaceId)
+            setSpaceIDModal(spaceId);
+            setOpen(true);            
             }}
-                className="workspace-options"><FontAwesomeIcon icon={faTrashCan}/>
+            className="workspace-options"><FontAwesomeIcon icon={faTrashCan}/>
         </span>
     );
 }

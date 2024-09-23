@@ -1,0 +1,44 @@
+import React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+export function AlertDialog({ open, setOpen, spaceIDModal, handler }) {
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleDelete = () => {
+        handler(spaceIDModal);
+        setOpen(false);
+    };
+
+    return (
+        <React.Fragment>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                {"Are you sure you want to delete this workspace?!"}
+                </DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    This workspace may contains projects and workspaces.
+                    This action can't be undoed
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose}>Close</Button>
+                <Button onClick={handleDelete} autoFocus>
+                    Delete
+                </Button>
+                </DialogActions>
+            </Dialog>
+        </React.Fragment>
+    );
+}
