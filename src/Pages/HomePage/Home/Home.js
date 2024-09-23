@@ -7,11 +7,17 @@ import { Route, Routes } from 'react-router-dom';
 import './Home.scss';
 import axios from "axios";
 
+// Get auth token from local storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
 const apiURL = `http://localhost:5000/auth/me`;
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
+
 const apiConfig = {
-    headers: {
-        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-    }
+    headers: AuthHeader
 };
 
 export default function Home() {

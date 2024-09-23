@@ -2,6 +2,15 @@ import './AddWorkspaceForm.scss';
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
+const apiURL = 'http://localhost:5000/workspaces';
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
+
 export default function AddWorkspaceForm({ workspaces, handler, style, styleHandler}) {
     const formRef = useRef(null);
     const [workspaceName, setWorkspaceName] = useState('');
@@ -10,14 +19,12 @@ export default function AddWorkspaceForm({ workspaces, handler, style, styleHand
     }
     function handleWorkspaceSubmit(e) {
         e.preventDefault();
-        axios.post('http://localhost:5000/workspaces', {
+        axios.post(apiURL, {
             "name": workspaceName,
             "description": ""
         },
         {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
+            headers: AuthHeader
         })
         .then((res) => {
             handler([...workspaces, {id: res.data.workspaceId, name: workspaceName}]);

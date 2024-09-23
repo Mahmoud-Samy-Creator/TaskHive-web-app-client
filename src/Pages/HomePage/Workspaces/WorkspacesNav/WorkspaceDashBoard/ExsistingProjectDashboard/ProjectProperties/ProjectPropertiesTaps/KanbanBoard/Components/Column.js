@@ -6,13 +6,15 @@ import AddTaskForm from "./AddTaskForm";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
 
-// API Params
-const apiURL = `http://localhost:5000/workspaces`;
-const apiConfig = {
-    headers: {
-        "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-    }
-};
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
+const apiConfig = { headers: AuthHeader };
 
 export default function Column({ column, setColumns, columns }) {
     const ids = useContext(IDS);

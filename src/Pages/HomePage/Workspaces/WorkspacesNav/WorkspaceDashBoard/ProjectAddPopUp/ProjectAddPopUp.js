@@ -1,6 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
+const apiConfig = {
+    headers: AuthHeader
+};
+
 export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, projectAddMethod, workspaceId }){
     const today = new Date().toISOString().split('T')[0];
     const formRef = useRef(null);
@@ -30,17 +42,12 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
     function handleAddingProjects(e) {
         e.preventDefault();
         styleHandler({display: "none"});
-        axios.post(`http://localhost:5000/workspaces/${workspaceId}/projects`,
+        axios.post(`${apiURL}/${workspaceId}/projects`,
             {
                 "name": newProjectDetails.name,
                 "description": newProjectDetails.disc,
                 "deadline": newProjectDetails.endDate
-            },
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            })
+            },apiConfig)
             .then((res) => {
                 if (res.status === 201) {
                     projectAddMethod([...projectsAdded, {...newProjectDetails, id: res.data["projectId"]}]);

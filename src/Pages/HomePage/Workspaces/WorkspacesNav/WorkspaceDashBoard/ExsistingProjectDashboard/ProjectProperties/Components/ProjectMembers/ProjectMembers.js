@@ -6,6 +6,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
+const apiConfig = { headers: AuthHeader };
+
 export default function ProjectMembers({ workspaceId, projectId }) {
     const [projectMembers, setProjectMembers] = useState([]);
     const [memberEmail, setMemberEmail] = useState("");
@@ -13,11 +23,7 @@ export default function ProjectMembers({ workspaceId, projectId }) {
 
     // Fetching workspace members
     useEffect(() => {
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/members`, {
-            headers: {
-                "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-            }
-        })
+        axios.get(`${apiURL}/${workspaceId}/members`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
                 setWorkspaceMembers(res.data);
@@ -28,12 +34,7 @@ export default function ProjectMembers({ workspaceId, projectId }) {
 
     // Getting the project members
     useEffect(() => {
-        axios.get(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/members`,
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
+        axios.get(`${apiURL}/${workspaceId}/projects/${projectId}/members`, apiConfig
         )
         .then((res) => {
             if (res.status === 200) {
@@ -49,15 +50,10 @@ export default function ProjectMembers({ workspaceId, projectId }) {
         const member = workspaceMembers.find(member => member.email === memberEmail);
         
         if (member) {
-            axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/add_members`,
+            axios.put(`${apiURL}/${workspaceId}/projects/${projectId}/add_members`,
                 {
                     "members": [`${member.id}`]
-                },
-                {
-                    headers: {
-                        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                    }
-                }
+                }, apiConfig
             )
             .then((res) => {
                 if (res.status === 200) {
@@ -98,15 +94,10 @@ export default function ProjectMembers({ workspaceId, projectId }) {
 function TotalAvatars({ projectMembers, workspaceId, projectId, setProjectMembers }) {
     // Remove member from the project
     function handleRemoveMember(memberId) {
-        axios.put(`http://localhost:5000/workspaces/${workspaceId}/projects/${projectId}/remove_members`,
+        axios.put(`${apiURL}/${workspaceId}/projects/${projectId}/remove_members`,
             {
                 "members": [`${memberId}`]
-            },
-            {
-                headers: {
-                    "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
+            }, apiConfig
         )
         .then((res) => {
             if (res.status === 200) {

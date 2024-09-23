@@ -6,11 +6,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import './WorkspacesNav.scss';
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
 const apiURL = 'http://localhost:5000/workspaces';
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
+;
+
 const apiConfig = {
-    headers: {
-        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-    }
+    headers: AuthHeader
 };
 
 export default function WorkspacesNav() {

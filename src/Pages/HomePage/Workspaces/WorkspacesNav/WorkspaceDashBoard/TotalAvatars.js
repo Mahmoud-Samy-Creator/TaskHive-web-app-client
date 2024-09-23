@@ -4,14 +4,16 @@ import axios from "axios";
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
 // API Params
-const apiConfig = {
-    headers: {
-        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-    }
-};
 const apiURL = `http://localhost:5000/workspaces`;
-// API Params
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
+const apiConfig = {headers: AuthHeader};
+
 
 
 export default function TotalAvatars({ WorkspaceMembers, setWorkspaceMembers }) {

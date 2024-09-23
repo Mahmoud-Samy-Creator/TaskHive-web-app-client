@@ -3,14 +3,15 @@ import { useParams } from "react-router-dom";
 import './UpdateProjectInfo.scss';
 import axios from "axios";
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
 
-// CLEANUP
-const apiURL= `http://localhost:5000/workspaces`;
-const apiConfig = {
-    headers: {
-        "Authorization":`Bearer ${localStorage.getItem('authToken')}`
-    }
-};
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
+const apiConfig = { headers: AuthHeader };
 
 export default function UpdateProjectInfo({ projectInfo, setProjectInfo, visible, handleVisiblity }) {
     const [projectUpdateInfo, setProjectUpdateInfo] = useState({

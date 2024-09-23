@@ -12,14 +12,15 @@ let taskDraggingInfo = {
     title: ""
 }
 
-// API Params
-const apiURL = `http://localhost:5000/workspaces`;
-const apiConfig = {
-    headers: {
-        "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-    }
-};
-// API Params
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
+const apiConfig = { headers: AuthHeader };
 
 export default function KanbanBoard({ workspaceId, projectId }) {
     const [columns, setColumns] = useState([]);

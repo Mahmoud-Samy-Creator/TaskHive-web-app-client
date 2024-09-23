@@ -113,7 +113,6 @@ export default function LoginForm() {
                     handler={handleUserPassword}
                 />
                 <RememberAndForget 
-                    checked={userInfo.rememberMe}
                     handler={handleRememberMe}
                 />
                 <FormSubmissionBtn 

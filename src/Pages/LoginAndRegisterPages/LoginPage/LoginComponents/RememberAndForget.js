@@ -1,7 +1,7 @@
 import React from "react";
 import Checkbox from '@mui/material/Checkbox';
 
-export default function RememberAndForget({checked, handler}) {
+export default function RememberAndForget({ handler}) {
     return(
         <div className="form-group d-md-flex" style={{display: "flex"}}>
             <div className="text-left" style={{width: "50%", display: "flex", alignItems: "center", justifyContent: "start"}}>

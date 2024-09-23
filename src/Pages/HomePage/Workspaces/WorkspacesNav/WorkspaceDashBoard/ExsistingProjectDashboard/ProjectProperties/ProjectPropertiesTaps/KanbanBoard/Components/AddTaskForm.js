@@ -2,6 +2,16 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
 
+// Get auth token from storage
+const storedTokenLoacal = localStorage.getItem('authToken');
+const storedTokenSession = sessionStorage.getItem('authToken');
+
+// API PARAMS
+const apiURL = "http://localhost:5000/workspaces";
+let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
+const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
+const apiConfig = { headers: AuthHeader };
+
 export default function AddTaskForm({ addTaskToColumn, column }) {
     const [taskInput, setTaskInput] = useState("");
     const ids = useContext(IDS);
@@ -9,19 +19,14 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
     // This function is for adding new task to the column
     function handleTaskAdd(e) {
         e.preventDefault();
-        axios.post(`http://localhost:5000/workspaces/${ids.workspaceId}/projects/${ids.projectId}/tasks`,
-            {
-                "title": taskInput,
-                "body": "",
-                "deadline": "2024-08-30",
-                "state": column.title,
-                "labels": []
-            },
-            {
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem('authToken')}`
-                }
-            }
+        const newTaskDetails = {
+            "title": taskInput,
+            "body": "",
+            "deadline": "2024-08-30",
+            "state": column.title,
+            "labels": []
+        };
+        axios.post(`${apiURL}/${ids.workspaceId}/projects/${ids.projectId}/tasks`, newTaskDetails ,apiConfig
         )
         .then((res) => {
             if (res.status === 201) {
