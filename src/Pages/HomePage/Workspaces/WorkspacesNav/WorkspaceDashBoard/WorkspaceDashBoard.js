@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 
 // Import needed context
 import ApiReqContext from "../../Contexts/ApiContext";
+import ProjectDeleteDialog from "../MainComponents/WorkSpaceCDOperations/ProjectsCDOperations/ProjectDeleteDialog";
 
 // Import Fontwasome icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,6 +29,10 @@ export default function WorkspaceDashBoard() {
     // Workspace Projects navigation
     const [ProjectAddPopUpStyle, setDisplay] = React.useState({display: "none"});
     const [projectsExists, setProjectsExists] = React.useState([]);
+
+    // Peoject delete dialog state managment
+    const [open, setOpen] = React.useState(false);
+    const [projectId, setProjectId] = React.useState("");
 
     // Fetching Workspace metaData
     React.useEffect(() => {
@@ -98,7 +103,8 @@ export default function WorkspaceDashBoard() {
     // Handle delete a project
     function handleDeleteClick(e, id) {
         e.preventDefault();
-        handleDeleteProject(id);
+        setProjectId(id)
+        setOpen(true)
     }
 
     function handleProjectAdd(newProjects) {
@@ -152,13 +158,14 @@ export default function WorkspaceDashBoard() {
                 <div className="workspace-project-add-button" onClick={() => setDisplay({display: "block"})}>
                     Add <br></br>Project
                 </div>
-                {projectsExists.map((project, index) => {
+                <ProjectDeleteDialog open={open} setOpen={setOpen} handler={handleDeleteProject} projectId={projectId}/>
+                {projectsExists.map((project) => {
                     return(
                         <ProjectsExists
+                            key={project.id}
                             workspaceId={workspaceId}
                             project={project}
                             handler={handleDeleteClick}
-                            key={project.id}
                         />
                     );
                 })}

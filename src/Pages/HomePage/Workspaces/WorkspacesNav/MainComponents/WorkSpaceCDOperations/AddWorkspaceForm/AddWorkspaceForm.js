@@ -1,6 +1,6 @@
 import './AddWorkspaceForm.scss';
 import React from "react";
-import ApiReqContext from '../../Contexts/ApiContext';
+import ApiReqContext from '../../../../Contexts/ApiContext';
 import axios from "axios";
 
 
@@ -30,7 +30,6 @@ export default function AddWorkspaceForm({ workspaces, handler, style, styleHand
                 styleHandler({ display: "none" });
             }
         }
-
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);

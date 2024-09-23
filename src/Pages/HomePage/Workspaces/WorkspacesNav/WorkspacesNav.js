@@ -1,13 +1,14 @@
 import React from "react";
-import AddWorkspaceForm from "./AddWorkspaceForm/AddWorkspaceForm";
-import AlertDialog  from "./MainComponents/AlertDialog";
+import AddWorkspaceForm from "./MainComponents/WorkSpaceCDOperations/AddWorkspaceForm/AddWorkspaceForm";
+import AddWorkSpacePlaceholer from "./MainComponents/WorkSpaceCDOperations/AddWorkspace";
+import DeleteWorkspaceAction from "./MainComponents/WorkSpaceCDOperations/DeleteWorkspace";
+import WorkspaceDeleteDialog  from "./MainComponents/WorkspaceDeleteDialog";
 
 // Import needed contexts
 import ApiReqContext from "../Contexts/ApiContext";
 
 // Import FontAwasomeIcons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
 import { Link } from "react-router-dom";
 import axios from "axios";
 import './WorkspacesNav.scss';
@@ -48,7 +49,12 @@ export default function WorkspacesNav() {
             <div className="cuurent-workspaces">
                 <span>Workspaces</span>
                 <div className="workspaces-choice">
-                    <AlertDialog open={open} setOpen={setOpen} spaceIDModal={spaceIDModal} handler={handleWorkspaceDelete}/>
+                    <WorkspaceDeleteDialog
+                        open={open}
+                        setOpen={setOpen}
+                        spaceIDModal={spaceIDModal}
+                        handler={handleWorkspaceDelete}
+                    />
                     {workspaces.map((space) => {
                         return(
                             <Link key={space.id} className="workspace-choosed" to={`/home/workspaces/${space.id}/projects`}>
@@ -71,31 +77,5 @@ export default function WorkspacesNav() {
                 </div>
             </div>
         </div>
-    );
-}
-
-
-// Handle adding workspaces component
-function AddWorkSpacePlaceholer({ styleHandler }) {
-    return(
-        <div className="add-workspace" onClick={() => styleHandler({display: "block"})}>
-            <div>
-                <FontAwesomeIcon icon={faPlus} style={{marginRight: "10px"}}/>
-                <span>Add work space</span>
-            </div>
-        </div>
-    )
-}
-
-// Handle delete workspaces component
-function DeleteWorkspaceAction({ spaceId, setOpen, setSpaceIDModal }) {
-    return(
-        <span onClick={(e) => {
-            e.preventDefault();
-            setSpaceIDModal(spaceId);
-            setOpen(true);            
-            }}
-            className="workspace-options"><FontAwesomeIcon icon={faTrashCan}/>
-        </span>
     );
 }

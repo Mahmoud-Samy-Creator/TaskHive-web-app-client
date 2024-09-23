@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function AlertDialog({ open, setOpen, spaceIDModal, handler }) {
+export default function WorkspaceDeleteDialog({ open, setOpen, spaceIDModal, handler }) {
     const handleClose = () => {
         setOpen(false);
     };
@@ -28,8 +28,8 @@ export default function AlertDialog({ open, setOpen, spaceIDModal, handler }) {
                 </DialogTitle>
                 <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    This workspace may contains projects and workspaces.
-                    This action can't be undoed
+                    This workspace may contains projects and tasks.
+                    This action can't be undoed.
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
