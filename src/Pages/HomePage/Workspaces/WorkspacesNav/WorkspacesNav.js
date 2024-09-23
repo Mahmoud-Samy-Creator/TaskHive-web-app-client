@@ -1,6 +1,6 @@
 import React from "react";
 import AddWorkspaceForm from "./AddWorkspaceForm/AddWorkspaceForm";
-import { AlertDialog } from "./MainComponents/AlertDialog";
+import AlertDialog  from "./MainComponents/AlertDialog";
 
 // Import needed contexts
 import ApiReqContext from "../Contexts/ApiContext";

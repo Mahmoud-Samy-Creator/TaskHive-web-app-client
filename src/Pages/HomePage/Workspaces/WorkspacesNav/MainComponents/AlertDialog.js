@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export function AlertDialog({ open, setOpen, spaceIDModal, handler }) {
+export default function AlertDialog({ open, setOpen, spaceIDModal, handler }) {
     const handleClose = () => {
         setOpen(false);
     };
