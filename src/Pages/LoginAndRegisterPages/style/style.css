@@ -66,11 +66,6 @@ button::-moz-focus-inner,
   padding: 0;
   border-style: none;
 }
-input[type="checkbox"] {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 0; 
-}
 [hidden] {
   display: none !important; }
 h2, h3 {
@@ -436,63 +431,8 @@ background: #fff; }
 .social-media .social-icon:hover, .social-media .social-icon:focus {
   border: 1px solid #3895c1;
 }
-.checkbox-wrap {
-  display: block;
-  position: relative;
-  padding-left: 15px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
 .forget-password-link {
   padding-right: 15px;
-}
-/* Hide the browser's default checkbox */
-.checkbox-wrap input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 52%;
-  transform: translateY(-50%);
-  left: 0;
-  width: 12px;
-  height: 12px;
-  border: 0.5px solid #ddd;
-  overflow: hidden;
-  border-radius: 4px;
-}
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  -webkit-transition: 0.3s;
-  -o-transition: 0.3s;
-  transition: 0.3s;
-  width: 100%;
-  height: 100%;
-}
-@media (prefers-reduced-motion: reduce) {
-  .checkmark:after {
-    -webkit-transition: none;
-    -o-transition: none;
-    transition: none; }
-}
-/* Show the checkmark when checked */
-.checkbox-wrap input:checked ~ .checkmark:after {
-  background-color: #0f85b4;
 }
 .btn {
   cursor: pointer;

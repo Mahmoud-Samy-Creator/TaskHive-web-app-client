@@ -11,9 +11,13 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    if (storedToken) {
-      setToken(storedToken);
+    const storedTokenLoacal = localStorage.getItem('authToken');
+    const storedTokenSession = sessionStorage.getItem('authToken');
+    if (storedTokenLoacal) {
+      setToken(storedTokenLoacal);
+    }
+    if (storedTokenSession) {
+      setToken(storedTokenSession);
     }
     setLoading(false);
   }, []);

@@ -50,6 +50,7 @@ function LogOutComponent({ params }) {
 
 function logOutFunctionality() {
     localStorage.clear();
+    sessionStorage.clear();
     setTimeout(() => {
         document.location.reload();
     }, 1000);

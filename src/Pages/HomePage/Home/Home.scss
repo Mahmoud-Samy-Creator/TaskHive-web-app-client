@@ -1,5 +1,6 @@
 @import '../styleVariables';
 
+
 .home-page {
     color: $text-color;
     height: 97vh;
@@ -11,9 +12,10 @@
     width: 99%;
     max-width: 99%;
     overflow: hidden;
+    display: flex;
 }
-@media (min-width: 950px) {
+@media (min-width: 767px) and (max-width: 991px) {
     .home-page {
-        display: flex;
+        flex-direction: column;
     }
 }

@@ -4,6 +4,10 @@ import FormSubmissionBtn from "../../MainComponents/FormSubmission";
 import RememberAndForget from "./RememberAndForget";
 import axios from "axios";
 
+// API Login request
+const apiURL = 'http://localhost:5000/auth/login';
+
+// Component styling
 const submitFailedStyle = {
     textAlign: "center",
     background: "#f63a3a",
@@ -22,6 +26,7 @@ const submitSuccessStyle = {
     padding: "10px 0"
 };
 
+// Login form components
 export default function LoginForm() {
     const [userInfo, setUserInfo] = useState({
         email: "",
@@ -73,11 +78,11 @@ export default function LoginForm() {
     }
 
     function loginReq(data) {
-        axios.post('http://localhost:5000/auth/login', data)
+        axios.post(apiURL, data)
             .then(res => {
                 if (res.status === 200) {
                     setSubmiteMessage({ success: true, message: "Login successful" });
-                    localStorage.setItem('authToken', res.data.token);
+                    userInfo.rememberMe ? localStorage.setItem('authToken', res.data.token) : sessionStorage.setItem('authToken', res.data.token);
                     logInSucc()
                 }
             })
