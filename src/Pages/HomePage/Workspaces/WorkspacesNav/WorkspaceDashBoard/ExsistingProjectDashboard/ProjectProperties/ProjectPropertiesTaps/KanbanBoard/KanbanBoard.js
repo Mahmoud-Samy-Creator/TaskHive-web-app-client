@@ -6,26 +6,20 @@ import axios from 'axios';
 import { IDS } from './DashboardIDs';
 import './KanbanBoard.scss';
 
+// Import needed Contexts
+import ApiReqContext from '../../../../../../Contexts/ApiContext';
+
 let taskDraggingInfo = {
     id: null,
     state: "",
     title: ""
 }
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
-const apiConfig = { headers: AuthHeader };
-
 export default function KanbanBoard({ workspaceId, projectId }) {
     const [columns, setColumns] = useState([]);
     const [display, setDisplay] = useState({ display: "none" });
     const [newColumnTitle, setNewColumnTitle] = useState("");
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
     const formRef = useRef(null);
 
     // Adding new column
@@ -47,7 +41,6 @@ export default function KanbanBoard({ workspaceId, projectId }) {
         .then((res) => {
             if (res.status === 200) {
                 const fetchedTasks = res.data;
-                console.log(fetchedTasks)
                 const uniqueStates = Array.from(new Set(fetchedTasks.map(task => task.state)));
                 const columnsWithTasks = uniqueStates.map((state, index) => ({
                     id: index + 1,
@@ -73,7 +66,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
         .catch((err) => {
             console.error(err);
         });
-    }, [workspaceId, projectId]);
+    }, [workspaceId, projectId, apiURL, apiConfig]);
 
     useEffect(() => {
         function insertAboveTask(zone, mouseY) {
@@ -172,7 +165,7 @@ export default function KanbanBoard({ workspaceId, projectId }) {
                 zone.removeEventListener('drop', () => {});
             });
         };
-    }, [columns, projectId, workspaceId]);
+    }, [columns, projectId, workspaceId, apiURL, apiConfig]);
 
     function handleSubmit(e) {
         e.preventDefault();

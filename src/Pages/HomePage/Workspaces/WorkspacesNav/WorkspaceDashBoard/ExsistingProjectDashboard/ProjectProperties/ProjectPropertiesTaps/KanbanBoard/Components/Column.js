@@ -6,18 +6,13 @@ import AddTaskForm from "./AddTaskForm";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
+// Import needed context
+import ApiReqContext from "../../../../../../../Contexts/ApiContext";
 
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
-const apiConfig = { headers: AuthHeader };
 
 export default function Column({ column, setColumns, columns }) {
     const ids = useContext(IDS);
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Handle Delete task
     function handleDeleteTask(taskId) {

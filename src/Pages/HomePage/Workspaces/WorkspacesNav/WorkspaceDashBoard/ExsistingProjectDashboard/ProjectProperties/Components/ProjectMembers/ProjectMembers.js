@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import ApiReqContext from "../../../../../../Contexts/ApiContext";
 import './ProjectMembers.scss';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
@@ -6,23 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
-const apiConfig = { headers: AuthHeader };
 
 export default function ProjectMembers({ workspaceId, projectId }) {
-    const [projectMembers, setProjectMembers] = useState([]);
-    const [memberEmail, setMemberEmail] = useState("");
-    const [workspaceMembers, setWorkspaceMembers] = useState([]);
+    const [projectMembers, setProjectMembers] = React.useState([]);
+    const [memberEmail, setMemberEmail] = React.useState("");
+    const [workspaceMembers, setWorkspaceMembers] = React.useState([]);
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Fetching workspace members
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(`${apiURL}/${workspaceId}/members`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
@@ -30,10 +23,10 @@ export default function ProjectMembers({ workspaceId, projectId }) {
             }
         })
         .catch((err) => console.error(err));
-    }, [workspaceId]);
+    }, [workspaceId, apiURL, apiConfig]);
 
     // Getting the project members
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(`${apiURL}/${workspaceId}/projects/${projectId}/members`, apiConfig
         )
         .then((res) => {
@@ -42,7 +35,7 @@ export default function ProjectMembers({ workspaceId, projectId }) {
             }
         })
         .catch((err) => console.error(err));
-    }, [workspaceId, projectId]);
+    }, [workspaceId, projectId, apiURL, apiConfig]);
 
     // Add members to the project
     function handleAddProjectMembers(e) {
@@ -92,6 +85,7 @@ export default function ProjectMembers({ workspaceId, projectId }) {
 }
 
 function TotalAvatars({ projectMembers, workspaceId, projectId, setProjectMembers }) {
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
     // Remove member from the project
     function handleRemoveMember(memberId) {
         axios.put(`${apiURL}/${workspaceId}/projects/${projectId}/remove_members`,

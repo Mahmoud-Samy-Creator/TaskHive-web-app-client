@@ -1,19 +1,14 @@
 import './AddWorkspaceForm.scss';
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
+import ApiReqContext from '../../Contexts/ApiContext';
 import axios from "axios";
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API PARAMS
-const apiURL = 'http://localhost:5000/workspaces';
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
 
 export default function AddWorkspaceForm({ workspaces, handler, style, styleHandler}) {
-    const formRef = useRef(null);
-    const [workspaceName, setWorkspaceName] = useState('');
+    const formRef = React.useRef(null);
+    const [workspaceName, setWorkspaceName] = React.useState('');
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
+
     function handleNameInput(e) {
         setWorkspaceName(e.target.value);
     }
@@ -22,17 +17,14 @@ export default function AddWorkspaceForm({ workspaces, handler, style, styleHand
         axios.post(apiURL, {
             "name": workspaceName,
             "description": ""
-        },
-        {
-            headers: AuthHeader
-        })
+        }, apiConfig)
         .then((res) => {
             handler([...workspaces, {id: res.data.workspaceId, name: workspaceName}]);
         })
         styleHandler({display: "none"});
         setWorkspaceName('');
     }
-    useEffect(() => {
+    React.useEffect(() => {
         function handleClickOutside(event) {
             if (formRef.current && !formRef.current.contains(event.target)) {
                 styleHandler({ display: "none" });

@@ -1,29 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import './UpdateProjectInfo.scss';
 import axios from "axios";
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
+// Import needed Contexts
+import ApiReqContext from "../../../../Contexts/ApiContext";
 
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
-const apiConfig = { headers: AuthHeader };
 
 export default function UpdateProjectInfo({ projectInfo, setProjectInfo, visible, handleVisiblity }) {
-    const [projectUpdateInfo, setProjectUpdateInfo] = useState({
+    const [projectUpdateInfo, setProjectUpdateInfo] = React.useState({
         "name": "",
         "description": "",
         "deadline": ""
     });
-    const formRef = useRef(null);
+    const formRef = React.useRef(null);
     const { workspaceId, projectId } = useParams();
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Update state when projectInfo changes
-    useEffect(() => {
+    React.useEffect(() => {
         setProjectUpdateInfo({
             "name": projectInfo.name || "",
             "description": projectInfo.description || "",
@@ -31,7 +26,7 @@ export default function UpdateProjectInfo({ projectInfo, setProjectInfo, visible
         });
     }, [projectInfo]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         function handleClickOutside(event) {
             if (formRef.current && !formRef.current.contains(event.target)) {
                 handleVisiblity({display: "none"});

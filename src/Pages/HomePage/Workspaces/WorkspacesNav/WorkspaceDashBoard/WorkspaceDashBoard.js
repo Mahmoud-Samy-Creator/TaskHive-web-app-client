@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useParams, Link } from "react-router-dom";
+
+// Import needed context
+import ApiReqContext from "../../Contexts/ApiContext";
+
+// Import Fontwasome icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
@@ -8,51 +13,41 @@ import TotalAvatars from "./TotalAvatars";
 import axios from "axios";
 import './WorkspaceDashBoard.scss';
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
 
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
-const apiConfig = {
-    headers: AuthHeader
-};
-
-export default function WorkspaceDashBoard({ workspaceName, workspaceNameStateHandler }) {
+export default function WorkspaceDashBoard() {
     // Workspace meta data
     const {workspaceId} = useParams();
-    const [workspaceMetaData, setworkspaceMetaData] = useState({});
-    const [workspaceNameInput, setWorkspaceNameInput] = useState("");
-    const [WorkspaceMembers, setWorkspaceMembers] = useState([]);
+    const [workspaceMetaData, setworkspaceMetaData] = React.useState({});
+    const [workspaceNameInput, setWorkspaceNameInput] = React.useState("");
+    const [WorkspaceMembers, setWorkspaceMembers] = React.useState([]);
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Workspace members
-    const [memberEmail, setMemberEmail] = useState("")
+    const [memberEmail, setMemberEmail] = React.useState("")
 
     // Workspace Projects navigation
-    const [ProjectAddPopUpStyle, setDisplay] = useState({display: "none"});
-    const [projectsExists, setProjectsExists] = useState([]);
+    const [ProjectAddPopUpStyle, setDisplay] = React.useState({display: "none"});
+    const [projectsExists, setProjectsExists] = React.useState([]);
 
     // Fetching Workspace metaData
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(`${apiURL}/${workspaceId}`, apiConfig)
         .then((res) => {
             setworkspaceMetaData(res.data);
             setWorkspaceNameInput(res.data.name);
         })
-    }, [workspaceId]);
+    }, [workspaceId, apiURL, apiConfig]);
 
     // Fetching workspace members
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(`${apiURL}/${workspaceId}/members`, apiConfig)
         .then((res) => {
             setWorkspaceMembers(res.data);
         })
-    }, [workspaceId])
+    }, [workspaceId, apiURL, apiConfig])
 
     // Getting workspace existing Projects
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(`${apiURL}/${workspaceId}/projects`, apiConfig)
         .then((res) => {
             if (res.status === 200) {
@@ -60,7 +55,7 @@ export default function WorkspaceDashBoard({ workspaceName, workspaceNameStateHa
             }
         })
         .catch((err) => console.error(err));
-    }, [workspaceId])
+    }, [workspaceId, apiURL, apiConfig])
 
     // Change workspace name
     function handleWorkspaceNameChange(e) {

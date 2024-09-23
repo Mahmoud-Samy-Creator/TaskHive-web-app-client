@@ -1,25 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import ApiReqContext from "../../Contexts/ApiContext";
 import axios from "axios";
+
+// Import MUI needed components
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
-
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API Params
-const apiURL = `http://localhost:5000/workspaces`;
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
-const apiConfig = {headers: AuthHeader};
-
-
 
 export default function TotalAvatars({ WorkspaceMembers, setWorkspaceMembers }) {
     const [visibleOptions, setVisibleOptions] = useState(null);
     const avatarOptionRef = useRef(null);
     const {workspaceId} = useParams();
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     useEffect(() => {
         function handleClickOutside(event) {

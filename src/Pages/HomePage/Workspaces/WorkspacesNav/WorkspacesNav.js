@@ -1,36 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import AddWorkspaceForm from "./AddWorkspaceForm/AddWorkspaceForm";
+
+// Import needed contexts
+import ApiReqContext from "../Contexts/ApiContext";
+
+// Import FontAwasomeIcons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import './WorkspacesNav.scss';
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API PARAMS
-const apiURL = 'http://localhost:5000/workspaces';
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
-;
-
-const apiConfig = {
-    headers: AuthHeader
-};
 
 export default function WorkspacesNav() {
 
-    const [workspaceAddFormDisplay, setworkspaceAddFormDisplay] = useState({display: "none"});
-    const [workspaces, setWorkspace] = useState([])
+    const [workspaceAddFormDisplay, setworkspaceAddFormDisplay] = React.useState({display: "none"});
+    const [workspaces, setWorkspace] = React.useState([])
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Getting Existing workspaces
-    useEffect(() => {
+    React.useEffect(() => {
         axios.get(apiURL, apiConfig)
         .then((res) => { res.status === 200 ? setWorkspace(res.data) : console.error(res.status)})
         .catch((err) => console.error(err))
-    }, [])
+    }, [apiURL, apiConfig])
 
     // Handle delete workspace
     function handleWorkspaceDelete(id) {

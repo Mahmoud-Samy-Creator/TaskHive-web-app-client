@@ -1,20 +1,14 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import axios from "axios";
 import { IDS } from "../DashboardIDs";
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
-const apiConfig = { headers: AuthHeader };
+// Import Needed contexts
+import ApiReqContext from "../../../../../../../Contexts/ApiContext";
 
 export default function AddTaskForm({ addTaskToColumn, column }) {
-    const [taskInput, setTaskInput] = useState("");
-    const ids = useContext(IDS);
+    const [taskInput, setTaskInput] = React.useState("");
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
+    const ids = React.useContext(IDS);
 
     // This function is for adding new task to the column
     function handleTaskAdd(e) {

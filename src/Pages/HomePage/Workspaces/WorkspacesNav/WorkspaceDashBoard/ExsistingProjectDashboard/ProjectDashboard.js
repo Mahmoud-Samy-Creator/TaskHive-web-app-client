@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, Routes, Route, Navigate } from "react-router-dom";
+import ApiReqContext from "../../../Contexts/ApiContext";
 import UpdateProjectInfo from "./UpdateProjectInfo/UpdateProjectInfo";
 import DashboardHeader from "./DashboardHeader/DashboardHeader";
 import ProjectProperties from './ProjectProperties/ProjectProperties';
@@ -9,26 +10,18 @@ import ProjectQuestions from "./ProjectProperties/ProjectPropertiesTaps/ProjectQ
 import axios from "axios";
 import './ProjectDashboard.scss';
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
-
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  { "Authorization" : `Bearer ${AuthHeaderParam}` }
-const apiConfig = { headers: AuthHeader };
-
 export default function ProjectDashboard() {
     const { workspaceId, projectId } = useParams();
-    const [projectInfo, setProjectInfo] = useState({
+    const [projectInfo, setProjectInfo] = React.useState({
         id: "",
         name: "",
         description: "",
         deadline: "",
     })
-    const [ProjectInfoUpdatePopUp, setProjectInfoUpdatePopUp] = useState({display: "none"});
-    useEffect(() => {
+    const [ProjectInfoUpdatePopUp, setProjectInfoUpdatePopUp] = React.useState({display: "none"});
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
+
+    React.useEffect(() => {
         // Get project information
         axios.get(`${apiURL}/${workspaceId}/projects/${projectId}`, apiConfig)
         .then((res) => {
@@ -38,7 +31,7 @@ export default function ProjectDashboard() {
             console.error(err);
         })
         // Get project tasks
-    }, [workspaceId, projectId]);
+    }, [workspaceId, projectId, apiURL, apiConfig]);
 
     return (
         <div className="dashboard">

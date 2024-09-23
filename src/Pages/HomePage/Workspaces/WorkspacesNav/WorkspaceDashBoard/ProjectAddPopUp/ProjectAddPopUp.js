@@ -1,28 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import axios from "axios";
 
-// Get auth token from storage
-const storedTokenLoacal = localStorage.getItem('authToken');
-const storedTokenSession = sessionStorage.getItem('authToken');
+// Import needed contexts
+import ApiReqContext from "../../../Contexts/ApiContext";
 
-// API PARAMS
-const apiURL = "http://localhost:5000/workspaces";
-let AuthHeaderParam = storedTokenLoacal ? storedTokenLoacal : storedTokenSession;
-const AuthHeader =  {"Authorization":`Bearer ${AuthHeaderParam}`}
-const apiConfig = {
-    headers: AuthHeader
-};
 
 export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, projectAddMethod, workspaceId }){
     const today = new Date().toISOString().split('T')[0];
-    const formRef = useRef(null);
-    const [newProjectDetails, setNewProjectDetails] = useState({
+    const formRef = React.useRef(null);
+    const [newProjectDetails, setNewProjectDetails] = React.useState({
         name: "",
         disc: "",
         startData: today,
         endDate: "",
         id: null
     })
+    const {apiURL, apiConfig} = React.useContext(ApiReqContext);
 
     // Handling the new Project properties
     function handleProjectName(e) {
@@ -61,7 +54,7 @@ export default function ProjectAddPopUp({ style, styleHandler, projectsAdded, pr
             endDate: "",
         })
     }
-    useEffect(() => {
+    React.useEffect(() => {
         function handleClickOutside(event) {
             if (formRef.current && !formRef.current.contains(event.target)) {
                 styleHandler({ display: "none" });
