@@ -35,8 +35,15 @@ export default function ProjectDashboard() {
 
     return (
         <div className="dashboard">
-            <DashboardHeader name={projectInfo.name} visibleHandler={setProjectInfoUpdatePopUp}/>
-            <ProjectProperties name={projectInfo.name} workspaceId={workspaceId} projectId={projectId} />
+            <DashboardHeader
+                name={projectInfo.name}
+                visibleHandler={setProjectInfoUpdatePopUp}
+            />
+            <ProjectProperties
+                name={projectInfo.name}
+                workspaceId={workspaceId}
+                projectId={projectId}
+            />
             <UpdateProjectInfo
                 projectInfo={projectInfo}
                 setProjectInfo={setProjectInfo}

@@ -16,7 +16,6 @@ export default function AddTaskForm({ addTaskToColumn, column }) {
         const newTaskDetails = {
             "title": taskInput,
             "body": "",
-            "deadline": "2024-08-30",
             "state": column.title,
             "labels": []
         };
